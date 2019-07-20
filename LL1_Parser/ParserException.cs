@@ -16,7 +16,7 @@ namespace LL1_Parser
     }
 
     /// <summary>
-    /// Exception that throws when the type error occurs during using reflection and types are not compatiable
+    /// Exception that is thrown when the type error occurs during using reflection and types are not compatiable
     /// </summary>
     public class ParserTypeErrorException : ParserErrorException
     {
@@ -24,6 +24,16 @@ namespace LL1_Parser
         public ParserTypeErrorException(string message) : base(message) { }
         public ParserTypeErrorException(string message, Exception InnerException) : base(message, InnerException) { }
         public ParserTypeErrorException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+    /// <summary>
+    /// Exception that is thrown when there expression of successed parsing returns bad value
+    /// </summary>
+    public class ParserReturnValueException : ParserTypeErrorException
+    {
+        public ParserReturnValueException() : base() { }
+        public ParserReturnValueException(string message) : base(message) { }
+        public ParserReturnValueException(string message, Exception InnerException) : base(message, InnerException) { }
+        public ParserReturnValueException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
     /// <summary>
