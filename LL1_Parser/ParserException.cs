@@ -14,6 +14,13 @@ namespace LL1_Parser
         public ParserErrorException(string message, Exception InnerException) : base(message, InnerException) { }
         public ParserErrorException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+    public class ParserUnknownTokenException : ParserErrorException
+    {
+        public ParserUnknownTokenException() : base() { }
+        public ParserUnknownTokenException(string message) : base(message) { }
+        public ParserUnknownTokenException(string message, Exception InnerException) : base(message, InnerException) { }
+        public ParserUnknownTokenException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
 
     /// <summary>
     /// Exception that is thrown when the type error occurs during using reflection and types are not compatiable
