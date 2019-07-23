@@ -16,6 +16,13 @@ namespace LL1_Parser
     class Terminal : Symbol
     {
         public static readonly Terminal EmptyString = new Terminal();
+        private Terminal() { }
+        public Terminal(IToken Compatible)
+        {
+            if (CompatibleToken == null)
+                throw new ArgumentNullException("Compatible token is null");
+            CompatibleToken = Compatible;
+        }
         public IToken CompatibleToken { get; }
         public bool IsCompatiable(IToken token) {
             if (token == null)
