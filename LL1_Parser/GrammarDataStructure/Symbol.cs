@@ -7,13 +7,13 @@ namespace LL1_Parser
     /// <summary>
     /// The abstract class for a representation of a simgle symbol of the rule in a grammar
     /// </summary>
-    abstract class Symbol { }
+    public abstract class Symbol { }
 
     /// <summary>
     /// Terminal is represented by a token and a function that van resolve if some token is comaptible
     /// with the token that this terminal is represented by.
     /// </summary>
-    class Terminal : Symbol
+    public class Terminal : Symbol
     {
         public static readonly Terminal EmptyString = new Terminal();
         private Terminal() { }
@@ -31,5 +31,5 @@ namespace LL1_Parser
         }
     }
 
-    class NonTerminal : Symbol { }
+    internal class NonTerminal : Symbol { }
 }

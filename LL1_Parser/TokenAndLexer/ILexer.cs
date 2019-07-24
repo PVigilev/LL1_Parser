@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LL1_Parser
 {
-    interface ILexer<T> where T : IToken
+    public interface ILexer<T> where T : IToken
     {
         IList<T> Tokenize(string str);
     }

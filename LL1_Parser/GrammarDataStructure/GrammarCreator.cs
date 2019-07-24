@@ -5,10 +5,10 @@ using System.Text;
 namespace LL1_Parser
 {
 
-    class GrammarCreator
+    public class GrammarCreator
     {
         RuleExpressionEvaluator ExpressionEvaluator;
-        public NonTerminal StartSymbol { get { return StartSymbol; }
+        internal NonTerminal StartSymbol { get { return StartSymbol; }
             set
             {
                 if (!Result.ContainsKey(value))
@@ -28,9 +28,9 @@ namespace LL1_Parser
         Dictionary<string, NonTerminal> NameNTerminalTable = new Dictionary<string, NonTerminal>();
 
 
-        public GrammarCreator(RuleExpressionEvaluator ev)=>
+        internal GrammarCreator(RuleExpressionEvaluator ev)=>
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
-        public GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table)
+        internal GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table)
         {
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
             if ((name_terminal_table ?? throw new ArgumentNullException($"Table of name/terminal is null")).Count
@@ -39,14 +39,15 @@ namespace LL1_Parser
             NameTerminalTable = name_terminal_table;
             TokenTerminalTable = token_terminal_table;
         }
-        public GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, IToken> name_token_table)
+        internal GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, IToken> name_token_table)
         {
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
             foreach (var kvp in name_token_table)
                 RegisterTerminal(kvp.Key, kvp.Value);
         }
-        
 
+        public GrammarCreator(Dictionary<string, IToken> name_token_table) : this(new REEvaluator(), name_token_table) { }
+        public GrammarCreator(Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table) : this(new REEvaluator(), name_terminal_table, token_terminal_table) { }
         // register new terminal
         public void RegisterTerminal(string name, IToken token)
         {
@@ -68,7 +69,7 @@ namespace LL1_Parser
         /// <param name="NonTerminalName"></param>
         /// <param name="Words"></param>
         /// <param name="actions"></param>
-        public void RegisterRule(string NonTerminalName, string[] Words, RuleExpressionFactory[] actions)
+        internal void RegisterRule(string NonTerminalName, string[] Words, RuleExpressionFactory[] actions)
         {
             if (NonTerminalName == null)
                 throw new ArgumentNullException($"Name of non-terminal is null");
@@ -118,7 +119,7 @@ namespace LL1_Parser
         /// Creates a grammar using the current state of the instance
         /// </summary>
         /// <returns> Created instance of Grammar </returns>
-        public Grammar Create()
+        internal Grammar Create()
         {
             if (Result.Count == 0)
                 throw new GrammarException($"Grammar must be non-empty");
