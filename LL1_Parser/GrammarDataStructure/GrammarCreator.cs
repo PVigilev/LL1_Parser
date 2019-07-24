@@ -17,9 +17,6 @@ namespace LL1_Parser
             }
         }
         Dictionary<NonTerminal, HashSet<Rule>> Result = new Dictionary<NonTerminal, HashSet<Rule>>();
-        public GrammarCreator(RuleExpressionEvaluator ev)=>
-            ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
-
         /// <summary>
         /// Table with name of token (terminal) and its creators
         /// </summary>
@@ -29,6 +26,25 @@ namespace LL1_Parser
         /// Table with NonTerminals name and its instance
         /// </summary>
         Dictionary<string, NonTerminal> NameNTerminalTable = new Dictionary<string, NonTerminal>();
+
+
+        public GrammarCreator(RuleExpressionEvaluator ev)=>
+            ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
+        public GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table)
+        {
+            ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
+            if ((name_terminal_table ?? throw new ArgumentNullException($"Table of name/terminal is null")).Count
+                != (token_terminal_table ?? throw new ArgumentNullException($"Table token/terminal is null")).Count)
+                throw new GrammarException($"Problem with terminal registration");
+            NameTerminalTable = name_terminal_table;
+            TokenTerminalTable = token_terminal_table;
+        }
+        public GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, IToken> name_token_table)
+        {
+            ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
+            foreach (var kvp in name_token_table)
+                RegisterTerminal(kvp.Key, kvp.Value);
+        }
         
 
         // register new terminal
@@ -41,7 +57,9 @@ namespace LL1_Parser
             if (TokenTerminalTable.ContainsKey(token))
                 throw new ParserErrorException($"The token that represents {name}-terminal already represents other terminal");
 
-            NameTerminalTable.Add(name, new Terminal(token));
+            Terminal t = new Terminal(token);
+            NameTerminalTable.Add(name, t);
+            TokenTerminalTable.Add(token, t);
         }
 
         /// <summary>
@@ -66,7 +84,7 @@ namespace LL1_Parser
             if (!NameNTerminalTable.TryGetValue(NonTerminalName, out nt))
                 throw new ParserErrorException($"Undefined non-terminal {NonTerminalName}");
 
-            // resolving symbols int a rule
+            // resolving symbols in a rule
             Symbol[] symbols = new Symbol[Words.Length];
             for(int i = 0; i < Words.Length; i++)
             {
@@ -90,7 +108,7 @@ namespace LL1_Parser
                 exprs[i] = actions[i].Create();
             }
 
-            // creatinf=g and adding new rule
+            // creating and adding new rule
             if (!Result.ContainsKey(nt))
                 Result.Add(nt, new HashSet<Rule>());
             Result[nt].Add(new Rule(symbols, new RuleAction(exprs, ExpressionEvaluator)));
