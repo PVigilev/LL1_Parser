@@ -29,21 +29,40 @@ namespace LL1_Parser
             return new Constant(Value);
         }
     }
-    class StaticMethodCallingCreator : RuleExpressionFactory
+
+    abstract class InvokableCreator : RuleExpressionFactory
+    {
+        public abstract void AddNamePart(string name);
+        public abstract void AddArgument(RuleExpressionFactory arg);
+    }
+    class StaticMethodCallingCreator : InvokableCreator
     {
         AssembliesAccessWrapper Wrapper;
-        string FullMethodName;
-        RuleExpressionFactory[] Args;
+        StringBuilder FullMethodNameBuilder;
+        List<RuleExpressionFactory> Args;
+        public StaticMethodCallingCreator(AssembliesAccessWrapper w) { Wrapper = (w ?? throw new ArgumentNullException($"AseemblyAccessWrapper is null")); }
+
+        public override void AddNamePart(string name)
+        {
+            FullMethodNameBuilder.Append(name ?? throw new ArgumentNullException($"Name of method or type is null"));
+        }
+        public override void AddArgument(RuleExpressionFactory arg)
+        {
+            Args.Add(arg ?? throw new ArgumentNullException($"RuleExpressionFactory argument is null"));
+        }
         public StaticMethodCallingCreator(AssembliesAccessWrapper w, string mname, RuleExpressionFactory[] a)
         {
             Wrapper = w;
-            FullMethodName = mname;
-            Args = a;
+            FullMethodNameBuilder = new StringBuilder(mname);
+            Args = new List<RuleExpressionFactory>(a);
         }
         public override RuleExpression Create()
         {
-            RuleExpression[] args = new RuleExpression[Args.Length];
-            for(int i = 0; i < args.Length; i++)
+            var FullMethodName = FullMethodNameBuilder.ToString();
+            if (!AssembliesAccessWrapper.CheckFormat(FullMethodName))
+                throw new FormatException($"Full method name {FullMethodName} is in a wrong format");
+            RuleExpression[] args = new RuleExpression[Args.Count];
+            for (int i = 0; i < args.Length; i++)
             {
                 args[i] = Args[i].Create();
             }
@@ -56,21 +75,34 @@ namespace LL1_Parser
         }
     }
 
-    class ConstructorCallingCreator : RuleExpressionFactory
+    class ConstructorCallingCreator : InvokableCreator
     {
         AssembliesAccessWrapper Wrapper;
-        string FullTypeName;
-        RuleExpressionFactory[] Args;
-        public ConstructorCallingCreator(AssembliesAccessWrapper w, string tname, RuleExpressionFactory[] a)
+        StringBuilder FullTypeNameBuilder;
+        List<RuleExpressionFactory> Args;
+        public ConstructorCallingCreator(AssembliesAccessWrapper w) { Wrapper = (w ?? throw new ArgumentNullException($"AseemblyAccessWrapper is null")); }
+
+        public override void AddNamePart(string name)
+        {
+            FullTypeNameBuilder.Append(name ?? throw new ArgumentNullException($"Name of method or type is null"));
+        }
+        public override void AddArgument(RuleExpressionFactory arg)
+        {
+            Args.Add(arg ?? throw new ArgumentNullException($"RuleExpressionFactory argument is null"));
+        }
+        public ConstructorCallingCreator(AssembliesAccessWrapper w, string mname, RuleExpressionFactory[] a)
         {
             Wrapper = w;
-            FullTypeName = tname;
-            Args = a;
+            FullTypeNameBuilder = new StringBuilder(mname);
+            Args = new List<RuleExpressionFactory>(a);
         }
 
         public override RuleExpression Create()
         {
-            RuleExpression[] args = new RuleExpression[Args.Length];
+            RuleExpression[] args = new RuleExpression[Args.Count];
+            var FullTypeName = FullTypeNameBuilder.ToString();
+            if (!AssembliesAccessWrapper.CheckFormat(FullTypeName))
+                throw new FormatException($"Full type name {FullTypeName} is not in the right format");
             for (int i = 0; i < args.Length; i++)
             {
                 args[i] = Args[i].Create();
@@ -80,25 +112,42 @@ namespace LL1_Parser
         }
     }
 
-    class InstanceMethodCallingCreator : RuleExpressionFactory
+    class InstanceMethodCallingCreator : InvokableCreator
     {
-        RuleExpressionFactory context;
-        AssembliesAccessWrapper Wrapper;
-        string FullMethodName;
-        RuleExpressionFactory[] Args;
-
-        public InstanceMethodCallingCreator(AssembliesAccessWrapper wrapper, string fullMethodName, RuleExpressionFactory[] args, RuleExpressionFactory context)
+        public RuleExpressionFactory Context
         {
-            Wrapper = wrapper;
-            FullMethodName = fullMethodName;
-            Args = args;
-            this.context = context;
+            private get { return Context; }
+            set
+            {
+                Context = value ?? throw new ArgumentNullException($"Context must be non-null");
+            }
         }
+        AssembliesAccessWrapper Wrapper;
+        StringBuilder FullMethodNameBuilder;
+        List<RuleExpressionFactory> Args;
+        public InstanceMethodCallingCreator(AssembliesAccessWrapper w) { Wrapper = (w ?? throw new ArgumentNullException($"AseemblyAccessWrapper is null")); }
 
+        public override void AddNamePart(string name)
+        {
+            FullMethodNameBuilder.Append(name ?? throw new ArgumentNullException($"Name of method or type is null"));
+        }
+        public override void AddArgument(RuleExpressionFactory arg)
+        {
+            Args.Add(arg ?? throw new ArgumentNullException($"RuleExpressionFactory argument is null"));
+        }
+        public InstanceMethodCallingCreator(AssembliesAccessWrapper w, string mname, RuleExpressionFactory[] a)
+        {
+            Wrapper = w;
+            FullMethodNameBuilder = new StringBuilder(mname);
+            Args = new List<RuleExpressionFactory>(a);
+        }
         public override RuleExpression Create()
         {
-            RuleExpression cntxt = context.Create();
-            RuleExpression[] args = new RuleExpression[Args.Length];
+            var context = Context.Create();
+            var FullMethodName = FullMethodNameBuilder.ToString();
+            if (!AssembliesAccessWrapper.CheckFormat(FullMethodName))
+                throw new FormatException($"Full method name {FullMethodName} is in a wrong format");
+            RuleExpression[] args = new RuleExpression[Args.Count];
             for (int i = 0; i < args.Length; i++)
             {
                 args[i] = Args[i].Create();
@@ -108,7 +157,7 @@ namespace LL1_Parser
             var typename = FullMethodName.Substring(0, lastDot);
             var methodname = FullMethodName.Substring(lastDot + 1);
             var type = Wrapper.FindType(typename);
-            return new InstanceMethodCalling(type, methodname, cntxt, args);
+            return new InstanceMethodCalling(type, methodname, context, args);
         }
     }
 }
