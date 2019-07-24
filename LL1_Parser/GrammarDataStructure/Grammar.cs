@@ -7,10 +7,11 @@ namespace LL1_Parser
 {
     class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
     {
+        public readonly NonTerminal StartSymbol;
         Dictionary<NonTerminal, HashSet<Rule>> Rules;
         RuleExpressionEvaluator Evaluator;
 
-        public Grammar(Dictionary<NonTerminal, HashSet<Rule>> rules, RuleExpressionEvaluator ev)
+        public Grammar(NonTerminal start, Dictionary<NonTerminal, HashSet<Rule>> rules, RuleExpressionEvaluator ev)
         {
             if (rules == null)
                 throw new ArgumentNullException($"Set of rules is null");
@@ -20,6 +21,9 @@ namespace LL1_Parser
                 throw new ArgumentNullException("RuleExpressionEvaluator is null");
             Rules = rules;
             Evaluator = ev;
+            if (!Rules.ContainsKey(start))
+                throw new GrammarException($"Starting non-terminal symbol is not defined in the grammar");
+            StartSymbol = start;
         }
 
         public IEnumerable<Rule> this[NonTerminal nt]
