@@ -6,10 +6,8 @@ namespace LL1_Parser
 {
     public interface IToken : IEquatable<IToken> { }
 
-
-    // Token, ktery má v sobě nějakou hodnotu
-    public interface ITokenWithValue<T> : IToken
+    public interface ITokenWithValue<out T> : IToken
     {
-        T Value { get; set; }
+        T Value { get; }
     }    
 }
