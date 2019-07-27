@@ -9,6 +9,7 @@ namespace LL1_Parser.Parsers
 #endif
     class RDParser<Token> : AbstractParser<Token> where Token : IToken
     {
+        public RDParser(Grammar grm) : base(grm) { }
         public override object Parse(IList<Token> tokens)
         {
             int cur = 0;

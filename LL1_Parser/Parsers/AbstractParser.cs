@@ -13,6 +13,15 @@ namespace LL1_Parser
             public static readonly NotParsedObject Instance = new NotParsedObject();
         }
         protected Grammar Grammar;
+        internal AbstractParser(Grammar grm)
+        {
+            Grammar = grm ?? throw new ArgumentNullException("Grammar object is null");
+        }
+
+        internal AbstractParser(GrammarCreator gc)
+        {
+            Grammar = gc.Create();
+        }
         public abstract object Parse(IList<Token> tokens);
     }
 }

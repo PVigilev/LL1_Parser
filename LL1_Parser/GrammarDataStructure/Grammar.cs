@@ -8,7 +8,7 @@ namespace LL1_Parser
 #if DEBUG
     public
 #endif
-    class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
+    sealed class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
     {
         public readonly NonTerminal StartSymbol;
         Dictionary<NonTerminal, HashSet<Rule>> Rules;

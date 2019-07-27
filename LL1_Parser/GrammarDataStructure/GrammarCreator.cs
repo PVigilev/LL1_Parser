@@ -5,11 +5,9 @@ using System.Text;
 namespace LL1_Parser
 {
 
-    public class GrammarCreator
+    public class GrammarCreator : AbstractGrammarCreator
     {
-        RuleExpressionEvaluator ExpressionEvaluator;
-        private NonTerminal _startsymbol = null;
-        internal NonTerminal StartSymbol
+        internal override NonTerminal StartSymbol
         {
             get { return _startsymbol; }
             set
@@ -19,56 +17,30 @@ namespace LL1_Parser
                 _startsymbol = value;
             }
         }
-        public void SetStartSymbol (string name)
+        internal GrammarCreator(RuleExpressionEvaluator ev, AssembliesAccessWrapper wrapper) : base(ev, wrapper) { }
+        internal GrammarCreator(RuleExpressionEvaluator ev, AssembliesAccessWrapper wrapper, Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table)
+            : base(ev, wrapper)
         {
-            if (!NameNTerminalTable.ContainsKey(name))
-                throw new GrammarException($"Unknown nonterminal {name}");
-            StartSymbol = NameNTerminalTable[name];
-        }
-        Dictionary<NonTerminal, HashSet<Rule>> Result = new Dictionary<NonTerminal, HashSet<Rule>>();
-
-#if DEBUG
-        public
-#endif
-        /// <summary>
-        /// Table with name of token (terminal) and its creators
-        /// </summary>
-        Dictionary<string, Terminal> NameTerminalTable = new Dictionary<string, Terminal>();
-        Dictionary<IToken, Terminal> TokenTerminalTable = new Dictionary<IToken, Terminal>();
-
-#if DEBUG
-        public
-#endif
-        /// <summary>
-        /// Table with NonTerminals name and its instance
-        /// </summary>
-        Dictionary<string, NonTerminal> NameNTerminalTable = new Dictionary<string, NonTerminal>();
-
-        internal GrammarCreator(RuleExpressionEvaluator ev)
-        {
-            ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
-            NameTerminalTable.Add("_empty_string_", Terminal.EmptyString);
-        }
-        internal GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table)
-        {
-            ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
             if ((name_terminal_table ?? throw new ArgumentNullException($"Table of name/terminal is null")).Count
                 != (token_terminal_table ?? throw new ArgumentNullException($"Table token/terminal is null")).Count)
                 throw new GrammarException($"Problem with terminal registration");
             NameTerminalTable = name_terminal_table;
             TokenTerminalTable = token_terminal_table;
         }
-        internal GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, IToken> name_token_table)
+        internal GrammarCreator(RuleExpressionEvaluator ev, AssembliesAccessWrapper wrapper, Dictionary<string, IToken> name_token_table)
+            : base(ev, wrapper)
         {
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
             foreach (var kvp in name_token_table)
                 RegisterTerminal(kvp.Key, kvp.Value);
         }
 
-        public GrammarCreator(Dictionary<string, IToken> name_token_table) : this(new REEvaluator(), name_token_table)  { }
-        public GrammarCreator(Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table) : this(new REEvaluator(), name_terminal_table, token_terminal_table) { }
-        // register new terminal
-        public void RegisterTerminal(string name, IToken token)
+        /// <summary>
+        /// Register new terminal with the token it is represented
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="token"></param>
+        internal override void RegisterTerminal(string name, IToken token)
         {
             if (NameNTerminalTable.ContainsKey(name))
                 throw new ParserErrorException($"There already exists the non-terminal with name {name}");
@@ -83,12 +55,12 @@ namespace LL1_Parser
         }
 
         /// <summary>
-        /// Creates and register new rule of grammar
+        /// Register new rule using main information
         /// </summary>
         /// <param name="NonTerminalName"></param>
         /// <param name="Words"></param>
         /// <param name="actions"></param>
-        internal void RegisterRule(string NonTerminalName, string[] Words, RuleExpressionFactory[] actions)
+        internal override void RegisterRule(string NonTerminalName, string[] Words, RuleExpressionFactory[] actions)
         {
             if (NonTerminalName == null)
                 throw new ArgumentNullException($"Name of non-terminal is null");
@@ -150,19 +122,14 @@ namespace LL1_Parser
             Result[nt].Add(new Rule(symbols, new RuleAction(exprs, ExpressionEvaluator)));
         }
 
-
-        /// <summary>
-        /// Creates a grammar using the current state of the instance
-        /// </summary>
-        /// <returns> Created instance of Grammar </returns>
-        internal Grammar Create()
+        public override void SetStartSymbol(string name)
         {
-            if (Result.Count == 0)
-                throw new GrammarException($"Grammar must be non-empty");
-            if (StartSymbol == null)
-                throw new GrammarException($"Grammars starting symbol is null");
-            return new Grammar(StartSymbol, Result, ExpressionEvaluator);
+            if (name == null)
+                throw new ArgumentNullException("Name of the new start symbol is null");
+            NonTerminal nt;
+            if (!NameNTerminalTable.TryGetValue(name, out nt))
+                throw new GrammarException($"Nonterminal {name} does not exist");
+            StartSymbol = nt;
         }
-        
     }
 }

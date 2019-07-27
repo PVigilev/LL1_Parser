@@ -1,9 +1,13 @@
-﻿using System;
+﻿using LL1_Parser.Bootstrap;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser.Bootstrap
+namespace LL1_Parser
 {
+
+
+
     /**
      * *Grammar: Rule Grammar1   // register rule $0 in $1; $1
      * Grammar1: Rule Grammar1   // register $0 in $1; $1
@@ -46,6 +50,7 @@ namespace LL1_Parser.Bootstrap
         {
             GrammarForGrammarFile = null;
             CurrentWrapper = new AssembliesAccessWrapper(System.Reflection.Assembly.GetExecutingAssembly());
+            Init();
         }
 
         public static void Init()
