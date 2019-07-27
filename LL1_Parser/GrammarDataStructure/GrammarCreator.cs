@@ -47,6 +47,7 @@ namespace LL1_Parser
         internal GrammarCreator(RuleExpressionEvaluator ev)
         {
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
+            NameTerminalTable.Add("_empty_string_", Terminal.EmptyString);
         }
         internal GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table)
         {
@@ -148,6 +149,7 @@ namespace LL1_Parser
                 Result.Add(nt, new HashSet<Rule>());
             Result[nt].Add(new Rule(symbols, new RuleAction(exprs, ExpressionEvaluator)));
         }
+
 
         /// <summary>
         /// Creates a grammar using the current state of the instance
