@@ -4,7 +4,9 @@ using System.Text;
 
 namespace LL1_Parser
 {
-    /**/
+#if DEBUG
+    public
+#endif
     /// <summary>
     /// class for evaluation of RuleExpression.
     /// Used Visitor-template. Visitor part

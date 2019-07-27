@@ -19,7 +19,7 @@ namespace LL1_Parser
         private Terminal() { }
         public Terminal(IToken Compatible)
         {
-            if (CompatibleToken == null)
+            if (Compatible == null)
                 throw new ArgumentNullException("Compatible token is null");
             CompatibleToken = Compatible;
         }
@@ -31,5 +31,8 @@ namespace LL1_Parser
         }
     }
 
-    internal class NonTerminal : Symbol { }
+#if DEBUG
+    public
+#endif
+    class NonTerminal : Symbol { }
 }

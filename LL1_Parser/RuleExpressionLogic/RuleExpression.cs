@@ -4,7 +4,9 @@ using System.Text;
 
 namespace LL1_Parser
 {
-    
+#if DEBUG
+    public
+#endif
     /// <summary>
     /// Represents a single expression that will be evaluated iafter success of parsing
     /// Used Vsitor template. This part is acceptor
@@ -14,6 +16,9 @@ namespace LL1_Parser
         public abstract object Evaluate(RuleExpressionEvaluator evaluator);
     }
 
+#if DEBUG
+    public
+#endif
     /// <summary>
     /// In the rule of a grammar after a success parsing the number of the parsed symbol (nonterminal or termianl with value)
     /// </summary>
@@ -30,6 +35,10 @@ namespace LL1_Parser
             return evaluator.Evaluate(this);
         }
     }
+
+#if DEBUG
+    public
+#endif
     class Constant : RuleExpression
     {
         public readonly object Value;
@@ -43,6 +52,9 @@ namespace LL1_Parser
         }
     }
 
+#if DEBUG
+    public
+#endif
     class StaticMethodCalling : RuleExpression
     {
         public Type Type { get; }
@@ -61,6 +73,9 @@ namespace LL1_Parser
         }
     }
 
+#if DEBUG
+    public
+#endif
     class InstanceMethodCalling : StaticMethodCalling
     {
         public RuleExpression Context { get; }
@@ -74,6 +89,9 @@ namespace LL1_Parser
         }
     }
 
+#if DEBUG
+    public
+#endif
     class ConstructorCalling : RuleExpression
     {
         public Type Type { get; }

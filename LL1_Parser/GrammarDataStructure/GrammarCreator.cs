@@ -8,28 +8,46 @@ namespace LL1_Parser
     public class GrammarCreator
     {
         RuleExpressionEvaluator ExpressionEvaluator;
-        internal NonTerminal StartSymbol { get { return StartSymbol; }
+        private NonTerminal _startsymbol = null;
+        internal NonTerminal StartSymbol
+        {
+            get { return _startsymbol; }
             set
             {
                 if (!Result.ContainsKey(value))
                     throw new GrammarException($"Starting symbol is undefined in the grammar");
-                StartSymbol = value;
+                _startsymbol = value;
             }
         }
+        public void SetStartSymbol (string name)
+        {
+            if (!NameNTerminalTable.ContainsKey(name))
+                throw new GrammarException($"Unknown nonterminal {name}");
+            StartSymbol = NameNTerminalTable[name];
+        }
         Dictionary<NonTerminal, HashSet<Rule>> Result = new Dictionary<NonTerminal, HashSet<Rule>>();
+
+#if DEBUG
+        public
+#endif
         /// <summary>
         /// Table with name of token (terminal) and its creators
         /// </summary>
         Dictionary<string, Terminal> NameTerminalTable = new Dictionary<string, Terminal>();
         Dictionary<IToken, Terminal> TokenTerminalTable = new Dictionary<IToken, Terminal>();
+
+#if DEBUG
+        public
+#endif
         /// <summary>
         /// Table with NonTerminals name and its instance
         /// </summary>
         Dictionary<string, NonTerminal> NameNTerminalTable = new Dictionary<string, NonTerminal>();
 
-
-        internal GrammarCreator(RuleExpressionEvaluator ev)=>
+        internal GrammarCreator(RuleExpressionEvaluator ev)
+        {
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
+        }
         internal GrammarCreator(RuleExpressionEvaluator ev, Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table)
         {
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
@@ -46,7 +64,7 @@ namespace LL1_Parser
                 RegisterTerminal(kvp.Key, kvp.Value);
         }
 
-        public GrammarCreator(Dictionary<string, IToken> name_token_table) : this(new REEvaluator(), name_token_table) { }
+        public GrammarCreator(Dictionary<string, IToken> name_token_table) : this(new REEvaluator(), name_token_table)  { }
         public GrammarCreator(Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table) : this(new REEvaluator(), name_terminal_table, token_terminal_table) { }
         // register new terminal
         public void RegisterTerminal(string name, IToken token)
@@ -81,9 +99,22 @@ namespace LL1_Parser
                 throw new ArgumentException($"The sequence of symbols in a rule must not be empty");
             if (actions.Length == 0)
                 throw new ArgumentException($"The sequence of expressions in a rule must not be empty");
+
+            // if there is no symbol with NonTerminalName we define it
+            // otherwise - throwing an exception
             NonTerminal nt;
             if (!NameNTerminalTable.TryGetValue(NonTerminalName, out nt))
-                throw new ParserErrorException($"Undefined non-terminal {NonTerminalName}");
+            {
+                if (NameTerminalTable.ContainsKey(NonTerminalName))
+                    throw new GrammarException($"Symbol {NonTerminalName} is already defined as a Terminal");
+                else
+                {
+                    nt = new NonTerminal();
+                    NameNTerminalTable.Add(NonTerminalName, nt);
+                }
+            }
+            
+
 
             // resolving symbols in a rule
             Symbol[] symbols = new Symbol[Words.Length];
@@ -95,7 +126,10 @@ namespace LL1_Parser
                 {
                     Terminal tCur;
                     if (!NameTerminalTable.TryGetValue(Words[i], out tCur))
-                        throw new Exception($"Undefined symbol with name {Words[i]}");
+                    {
+                        cur = new NonTerminal();
+                        NameNTerminalTable.Add(Words[i], (NonTerminal) cur);
+                    }
                     else cur = tCur;
                 }
                 else cur = ntCur;

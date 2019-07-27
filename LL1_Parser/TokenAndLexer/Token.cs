@@ -4,7 +4,10 @@ using System.Text;
 
 namespace LL1_Parser
 {
-    public interface IToken : IEquatable<IToken> { }
+    public interface IToken
+    {
+        bool IsCompatible(IToken other);
+    }
 
     public interface ITokenWithValue<out T> : IToken
     {

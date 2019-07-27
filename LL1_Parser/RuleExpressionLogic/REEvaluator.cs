@@ -2,9 +2,9 @@
 
 namespace LL1_Parser
 {
-    /**/
-
-
+#if DEBUG
+    public
+#endif
     class REEvaluator : RuleExpressionEvaluator
     {
         public override object[] ParsingResult { get; set; }

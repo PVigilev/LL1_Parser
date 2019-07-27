@@ -5,6 +5,9 @@ using System.Text;
 
 namespace LL1_Parser
 {
+#if DEBUG
+    public
+#endif
     class Rule : IEnumerable<Symbol>
     {
         Symbol[] Symbols;

@@ -7,10 +7,16 @@ namespace LL1_Parser
     /// <summary>
     /// Factory-method pattern for creating RuleExpressions
     /// </summary>
+#if DEBUG
+    public
+#endif
     abstract class RuleExpressionFactory
     {
         public abstract RuleExpression Create();
     }
+#if DEBUG
+    public
+#endif
     class VariableCreator : RuleExpressionFactory
     {
         uint Id;
@@ -20,6 +26,9 @@ namespace LL1_Parser
             return new Variable(Id);
         }
     }
+#if DEBUG
+    public
+#endif
     class ConstantCreator<T> : RuleExpressionFactory
     {
         T Value;
@@ -29,12 +38,17 @@ namespace LL1_Parser
             return new Constant(Value);
         }
     }
-
+#if DEBUG
+    public
+#endif
     abstract class InvokableCreator : RuleExpressionFactory
     {
         public abstract void AddNamePart(string name);
         public abstract void AddArgument(RuleExpressionFactory arg);
     }
+#if DEBUG
+    public
+#endif
     class StaticMethodCallingCreator : InvokableCreator
     {
         AssembliesAccessWrapper Wrapper;
@@ -74,7 +88,9 @@ namespace LL1_Parser
             return new StaticMethodCalling(type, methodname, args);
         }
     }
-
+#if DEBUG
+    public
+#endif
     class ConstructorCallingCreator : InvokableCreator
     {
         AssembliesAccessWrapper Wrapper;
@@ -112,6 +128,9 @@ namespace LL1_Parser
         }
     }
 
+#if DEBUG
+    public
+#endif
     class InstanceMethodCallingCreator : InvokableCreator
     {
         public RuleExpressionFactory Context
@@ -129,6 +148,8 @@ namespace LL1_Parser
 
         public override void AddNamePart(string name)
         {
+            if ((name ?? throw new ArgumentNullException($"Name of method or type is null")).Length == 0)
+                throw new ParserErrorException("Name of type or method must be non-empty");
             FullMethodNameBuilder.Append(name ?? throw new ArgumentNullException($"Name of method or type is null"));
         }
         public override void AddArgument(RuleExpressionFactory arg)

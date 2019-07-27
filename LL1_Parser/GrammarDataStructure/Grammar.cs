@@ -5,6 +5,9 @@ using System.Text;
 
 namespace LL1_Parser
 {
+#if DEBUG
+    public
+#endif
     class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
     {
         public readonly NonTerminal StartSymbol;
