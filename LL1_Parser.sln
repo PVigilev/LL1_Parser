@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LL1_Parser", "LL1_Parser\LL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyWrapperTests", "AssemblyWrapperTests\AssemblyWrapperTests.csproj", "{755AB43F-CDB7-487A-B8BD-86D036C0DE9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BootstrapingTest", "BootstrapingTest\BootstrapingTest.csproj", "{CF223381-4B0A-404E-BD87-9C1F8CCBAFA5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,9 +20,6 @@ Global
 		{755AB43F-CDB7-487A-B8BD-86D036C0DE9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{755AB43F-CDB7-487A-B8BD-86D036C0DE9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{755AB43F-CDB7-487A-B8BD-86D036C0DE9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF223381-4B0A-404E-BD87-9C1F8CCBAFA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF223381-4B0A-404E-BD87-9C1F8CCBAFA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF223381-4B0A-404E-BD87-9C1F8CCBAFA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

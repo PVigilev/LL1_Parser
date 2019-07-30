@@ -14,7 +14,7 @@ namespace LL1_Parser
     {
         RuleExpression[] expressions;
 
-        public RuleAction(RuleExpression[] expressions, RuleExpressionEvaluator evaluator)
+        public RuleAction(RuleExpression[] expressions)
         {
             if (expressions == null)
                 throw new ArgumentNullException("Sequence of rule-expressions is null");
