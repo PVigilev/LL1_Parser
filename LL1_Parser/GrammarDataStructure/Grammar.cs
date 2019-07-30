@@ -11,6 +11,7 @@ namespace LL1_Parser
 #endif
     sealed class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
     {
+        public static readonly Grammar SpecialGrammar = DefaultInitializer.CreateDefaultSpecialGrammar();
         public readonly NonTerminal StartSymbol;
         Dictionary<NonTerminal, HashSet<Rule>> Rules;
         RuleExpressionEvaluator Evaluator;
@@ -70,7 +71,7 @@ namespace LL1_Parser
             /// <param name="wrapper"></param>
             /// <param name="ExpressionEvaluator"></param>
             /// <returns></returns>
-            public static Grammar CreateDefaultGrammarCreator()
+            public static Grammar CreateDefaultSpecialGrammar()
             {
                 GrammarCreator grm = new GrammarCreator();
                 foreach (var pair in SimpleToken.Instances)

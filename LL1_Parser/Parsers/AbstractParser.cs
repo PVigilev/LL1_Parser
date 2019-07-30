@@ -7,7 +7,7 @@ namespace LL1_Parser
 
     public abstract class AbstractParser<Token> where Token : IToken
     {
-        public class NotParsedObject
+        internal class NotParsedObject
         {
             private NotParsedObject() { }
             public static readonly NotParsedObject Instance = new NotParsedObject();

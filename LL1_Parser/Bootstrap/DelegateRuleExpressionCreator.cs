@@ -14,7 +14,7 @@ namespace LL1_Parser.Bootstrap
         {
             Expression = expr;
         }
-        public override RuleExpression Create()
+        public override RuleExpression Create(AssembliesAccessWrapper asms)
         {
             return new DelegateRuleExpression(Expression);
         }

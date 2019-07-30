@@ -37,34 +37,12 @@ namespace LL1_Parser
         /// <summary>
         /// Assemblies that will be passed to each RuleExpressionFactory where the framework finds types and methods
         /// </summary>
-        public AssembliesAccessWrapper Assemblies
-        {
-            get
-            {
-                return Assemblies;
-            }
-            set
-            {
-                if (Assemblies == null)
-                    Assemblies = value ?? throw new ArgumentNullException($"Assemblies is null");
-            }
-        }
+        public AssembliesAccessWrapper Assemblies { get; set; }
 
         /// <summary>
         /// ExpressionEvaluator that will be passed to Grammar instance
         /// </summary>
-        public RuleExpressionEvaluator ExpressionEvaluator
-        {
-            get
-            {
-                return ExpressionEvaluator;
-            }
-            set
-            {
-                if (ExpressionEvaluator == null)
-                    ExpressionEvaluator = value ?? throw new ArgumentNullException($"Assemblies is null");
-            }
-        }
+        public RuleExpressionEvaluator ExpressionEvaluator { get; set; }
 
         protected NonTerminal _startsymbol = null;
         /// <summary>

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser.Parsers
+namespace LL1_Parser
 {
 #if DEBUG
     public
 #endif
     class RDParser<Token> : AbstractParser<Token> where Token : IToken
     {
-        public RDParser(Grammar grm) : base(grm) { }
+        internal RDParser(Grammar grm) : base(grm) { }
         public override object Parse(IList<Token> tokens)
         {
             int cur = 0;
