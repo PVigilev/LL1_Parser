@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-namespace LL1_Parser
+namespace MFFParser
 {
 
     /// <summary>
@@ -61,42 +61,40 @@ internal
         /// <returns> Type object if it is found; null otherwise </returns>
         public static Type FindTypeInAssembly(string correctFullTypeName, Assembly asm)
         {
-            Type t = null;
-            int curDot = correctFullTypeName.IndexOf('.', 0);
-            if (curDot < 0)
-            {
-                t = asm.GetType(correctFullTypeName);
-            }
-            else
-            {
-                // find the first type
-                for (; curDot < correctFullTypeName.Length && curDot >= 0;
-                    curDot = correctFullTypeName.IndexOf('.', curDot + 1))
-                {
-                    t = asm.GetType(correctFullTypeName.Substring(0, curDot));
-                    if (t != null)
-                    {
-                        if (!t.IsVisible)
-                            continue;
-                        break;
-                    }
-                }
-                if (t == null)
-                    return null;
+            Type result = null;
 
-                // other nested types
-                // there are no namespaces here, so we can throw exceptions and everything will work fine
-                var splited = correctFullTypeName.Substring(curDot + 1).Split('.');
-                for(var i = 0; i < splited.Length; i++)
+            int cur_dot = correctFullTypeName.IndexOf('.', 0);
+            for (; cur_dot > 0 && cur_dot < correctFullTypeName.Length; cur_dot = correctFullTypeName.IndexOf('.', cur_dot + 1)) 
+            {
+                result = asm.GetType(correctFullTypeName.Substring(0, cur_dot));
+                if (result != null)
                 {
-                    if (t == null)
-                        return null;
-                    t = t.GetNestedType(splited[i]);                    
+                    break;
                 }
-
             }
-            return t;
-            
+
+            if(cur_dot < 0 && result == null)
+            {
+                return asm.GetType(correctFullTypeName);
+            }
+
+            // find nested type
+            while(cur_dot > 0 && cur_dot < correctFullTypeName.Length)
+            {
+                string name_nested_type = null;
+                int next_dot = correctFullTypeName.IndexOf('.', cur_dot + 1);
+                if (next_dot < 0)
+                {
+                    name_nested_type = correctFullTypeName.Substring(cur_dot+1);
+                }
+                else
+                {
+                    name_nested_type = correctFullTypeName.Substring(cur_dot + 1, next_dot - cur_dot - 1);
+                }
+                result = result.GetNestedType(name_nested_type);
+                cur_dot = next_dot;
+            }
+            return result;
         }
 
         /// <summary>
@@ -120,7 +118,7 @@ internal
                 {
                     if (char.IsWhiteSpace(fullname[i]))
                         continue;
-                    else if (char.IsLetter(fullname[i]))
+                    else if (char.IsLetter(fullname[i]) || fullname[i] == '_')
                     {
                         firstSym = false;
                         continue;
@@ -129,7 +127,7 @@ internal
                 }
                 else
                 {
-                    if (char.IsLetterOrDigit(fullname[i]))
+                    if (char.IsLetterOrDigit(fullname[i]) || fullname[i] == '_')
                         continue;
                     else if (fullname[i] == '.')
                     {

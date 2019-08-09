@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using System.Reflection;
-using LL1_Parser;
+using MFFParser;
 using System;
 
 namespace namespace1
@@ -119,21 +119,11 @@ namespace InvocationUsingReflectionTests
             }
             else Assert.Fail(differentTypeMessage);
         }
-        /*/
-        void CheckInvokationResultCorrectness(object result, int expect, string differentValueMessage, string differentTypeMessage) 
-        {
-            if (result is int)
-            {
-                if (((int)result) != expect)
-                    Assert.Fail(differentValueMessage);
-            }
-            else Assert.Fail(differentTypeMessage);
-        }
-        /**/
-        [Test]
-        
+      
+        [Test]        
         public void CheckNameTest()
         {
+            Assert.IsTrue(AssembliesAccessWrapper.CheckFormat("ArithmeticsTest.BinaryOperation.set_Left"));
             string[] inputs = new string[] { "a.b.c", "a..b", "aa2.3.c", ".b.c", "", "a.b." };
             if (!AssembliesAccessWrapper.CheckFormat(inputs[0]))
                 Assert.Fail("Does not accept correct name");
@@ -142,6 +132,16 @@ namespace InvocationUsingReflectionTests
                 if (AssembliesAccessWrapper.CheckFormat(inputs[i]))
                     Assert.Fail("Accept wrong format");
             }
+        }
+
+
+        [Test]
+        public void FindTypeTest()
+        {
+            string name = "namespace1.namespace2.Type1.Type4";
+            Assert.AreEqual(typeof(namespace1.namespace2.Type1.Type4), AssembliesAccessWrapper.FindTypeInAssembly("namespace1.namespace2.Type1.Type4", typeof(namespace1.namespace2.Type1.Type4).Assembly));
+            Assert.AreEqual(typeof(namespace1.namespace2.Type1.Type2.Type3), AssembliesAccessWrapper.FindTypeInAssembly("namespace1.namespace2.Type1.Type2.Type3", typeof(namespace1.namespace2.Type1.Type2.Type3).Assembly));
+            Assert.AreEqual(typeof(namespace1.namespace2.Type1), AssembliesAccessWrapper.FindTypeInAssembly("namespace1.namespace2.Type1", typeof(namespace1.namespace2.Type1).Assembly));
         }
     }
 }
