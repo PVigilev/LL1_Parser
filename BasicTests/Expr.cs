@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArithmeticsTest
+namespace ArithmeticExpr
 {
     public abstract class Expr
     {
@@ -12,8 +12,9 @@ namespace ArithmeticsTest
     }
     public abstract class BinaryOperation : Expr
     {
-        protected Expr Left;
-        protected Expr Right;
+        public Expr Left { get; set; }
+        public Expr Right { get; set; }
+        public BinaryOperation() { }
         public BinaryOperation(Expr left, Expr right)
         {
             Left = left;
@@ -22,6 +23,7 @@ namespace ArithmeticsTest
     }
     public class Addition : BinaryOperation
     {
+        public Addition() :base() { }
         public Addition(Expr left, Expr right) : base(left, right)
         {
         }
@@ -34,28 +36,40 @@ namespace ArithmeticsTest
 
     public class Substract : BinaryOperation
     {
+        public Substract()
+        {
+        }
+
         public Substract(Expr left, Expr right) : base(left, right)
         {
         }
 
         public override int Eval()
         {
-            return Left.Eval() + Right.Eval();
+            return Left.Eval() - Right.Eval();
         }
     }
     public class Multiply : BinaryOperation
     {
+        public Multiply()
+        {
+        }
+
         public Multiply(Expr left, Expr right) : base(left, right)
         {
         }
 
         public override int Eval()
         {
-            return Left.Eval() + Right.Eval();
+            return Left.Eval() * Right.Eval();
         }
     }
     public class Divide : BinaryOperation
     {
+        public Divide()
+        {
+        }
+
         public Divide(Expr left, Expr right) : base(left, right)
         {
         }

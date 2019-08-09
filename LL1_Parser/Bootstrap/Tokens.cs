@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser.Bootstrap
+namespace MFFParser
 {
 #if DEBUG
     public
@@ -25,7 +25,7 @@ namespace LL1_Parser.Bootstrap
         private SimpleToken(TokenType type)
             => Type = type;
         public enum TokenType { column, semicolumn, comma, OB, CB, OCB, CCB, dot}
-        TokenType Type;
+        public TokenType Type { get; }
         
         public override bool IsCompatible(IToken other)
         {
@@ -38,7 +38,7 @@ namespace LL1_Parser.Bootstrap
 #if DEBUG
     public
 #endif
-    class TokenValue<T> : AbstractToken, ITokenWithValue<T>
+    class TokenValue<T> : AbstractToken, ITokenWithValue<T>  where T : class
     {
         public TokenValue(T val)
         {
@@ -54,16 +54,16 @@ namespace LL1_Parser.Bootstrap
 #if DEBUG
     public
 #endif
-    class TokenName : TokenValue<string>
+    class TokenSymbol : TokenValue<string>
     {
-        public TokenName(string val) : base(val)
+        public TokenSymbol(string val) : base(val)
         {
         }
     }
 #if DEBUG
     public
 #endif
-    class TokenInt : TokenValue<int>
+    class TokenInt : TokenValue<object>
     {
         public TokenInt(int val) : base(val)
         {
@@ -72,7 +72,7 @@ namespace LL1_Parser.Bootstrap
 #if DEBUG
     public
 #endif
-    class TokenDouble : TokenValue<double>
+    class TokenDouble : TokenValue<object>
     {
         public TokenDouble(double val) : base(val)
         {
@@ -87,15 +87,17 @@ namespace LL1_Parser.Bootstrap
         {
         }
     }
+
 #if DEBUG
     public
 #endif
-    class TokenVarId : TokenValue<uint>
+    class TokenVarId : TokenValue<object>
     {
         public TokenVarId(uint val) : base(val)
         {
         }
     }
+    
 #if DEBUG
     public
 #endif

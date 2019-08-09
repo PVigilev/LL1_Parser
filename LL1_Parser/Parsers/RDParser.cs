@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser
+namespace MFFParser
 {
 #if DEBUG
     public
@@ -18,63 +18,59 @@ namespace LL1_Parser
                 throw new FormatException($"Grammar does not generate an input sequence");
             return result;
         }
-        
+
+
         private object ParseNonTerminal(NonTerminal nt, IList<Token> tokens, ref int cur)
         {
             object result = NotParsedObject.Instance;
-            foreach(var rule in Grammar[nt])
+            foreach (var rule in Grammar[nt])
             {
-                object[] ParsingResult = ParseRule(rule, tokens, ref cur);
-                if(ParsingResult != null)
+                int backtrack = cur;
+                var res = ParseRule(rule, tokens, ref cur);
+
+                if (res != NotParsedObject.Instance)
                 {
-                    if (result != NotParsedObject.Instance)
-                        throw new AmbiguousGrammarException($"There are at least two ways to generate input");
-                    result = Grammar.EvaluateRuleAction(rule, ParsingResult);
+                    result = res;
+                    break;
                 }
+                else cur = backtrack;
             }
             return result;
         }
 
-        private object[] ParseRule(Rule rule, IList<Token> tokens, ref int cur)
+
+        private object ParseRule(Rule rule, IList<Token> tokens, ref int cur)
         {
-            int backtrack = cur;
+            if (rule.Length == 1 && rule[0] == Terminal.EmptyString)
+                return Grammar.EvaluateRuleAction(rule, new object[0]);
+
             object[] result = new object[rule.Length];
             for(int i = 0; i < rule.Length; i++)
             {
-                if(rule[i] is Terminal term)
+                if(rule[i] is Terminal terminal)
                 {
-                    if (term == Terminal.EmptyString)
-                        result[i] = null;
-                    else if (term.IsCompatiable(tokens[cur]))
+                    if (cur >= tokens.Count || !terminal.IsCompatiable(tokens[cur]))
                     {
-                        if (tokens[cur] is ITokenWithValue<object> tkn)
-                            result[i] = tkn.Value;
-                        else
-                            result[i] = null;
-                        cur++;
-                        continue;
+                        return NotParsedObject.Instance;
                     }
                     else
-                    {
-                        cur = backtrack;
-                        return null;
+                    {                        
+                        result[i] = tokens[cur] is ITokenWithValue<object> token ? token.Value : null;
+                        cur++;
                     }
                 }
-
-                else
+                else //if (rule[i] is NonTerminal)
                 {
-                    NonTerminal nt = (NonTerminal)rule[i];
-                    object parsed = ParseNonTerminal(nt, tokens, ref cur);
-                    if (parsed == NotParsedObject.Instance)
+                    NonTerminal nonterm = (NonTerminal)rule[i];
+                    result[i] = ParseNonTerminal(nonterm, tokens, ref cur);
+                    if(result[i] == NotParsedObject.Instance)
                     {
-                        cur = backtrack;
-                        return null;
+                        return NotParsedObject.Instance;
                     }
-                    else
-                        result[i] = parsed;
                 }
             }
-            return result;
+            return Grammar.EvaluateRuleAction(rule, result);
         }
+
     }
 }

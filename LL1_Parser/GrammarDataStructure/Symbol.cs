@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser
+namespace MFFParser
 {
     /// <summary>
     /// The abstract class for a representation of a simgle symbol of the rule in a grammar
@@ -27,12 +27,26 @@ namespace LL1_Parser
         public bool IsCompatiable(IToken token) {
             if (token == null)
                 throw new ArgumentNullException();
-            return token.Equals(CompatibleToken);
+            return token.IsCompatible(CompatibleToken);
         }
     }
 
 #if DEBUG
     public
 #endif
-    class NonTerminal : Symbol { }
+    class NonTerminal : Symbol
+    {
+        public static int Count = 0;
+        public readonly int ID;
+        public readonly string Name;
+        public NonTerminal()
+        {
+            Count++;
+            ID = Count;
+        }
+        public NonTerminal(string s) : this()
+        {
+            Name = s;
+        }
+    }
 }

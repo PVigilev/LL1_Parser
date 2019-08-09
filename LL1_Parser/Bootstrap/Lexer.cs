@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace LL1_Parser.Bootstrap
+namespace MFFParser.Bootstrap
 {
 
 #if DEBUG
@@ -12,7 +12,7 @@ namespace LL1_Parser.Bootstrap
 
     class Lexer : ILexer<AbstractToken>
     {
-        HashSet<char> separators = new HashSet<char> { ' ', '.', ',', ':', '(', ')', '{', '}', '\n', '\r', '"' };
+        HashSet<char> separators = new HashSet<char> { ' ', '.', ',', ':', ';', '(', ')', '{', '}', '\n', '\r', '"', '\'', '\t' };
         Dictionary<string, TokenKeyWord> keywords = new Dictionary<string, TokenKeyWord> { { "new", TokenKeyWord.Instances[TokenKeyWord.KeyWordType.newKW] }, {"static", TokenKeyWord.Instances[TokenKeyWord.KeyWordType.staticKW] } };
         delegate AbstractToken Tokenizer(string str, int from, out int to);
         Tokenizer[] Tokenizers;
@@ -131,6 +131,8 @@ namespace LL1_Parser.Bootstrap
             return new TokenInt(res);
         }
 
+
+
         //TokenKeyWord
         ///////////////> AbstractToken
         //TokenName
@@ -161,9 +163,19 @@ namespace LL1_Parser.Bootstrap
                         return keywords[res];
                     }
                     else
-                        return new TokenName(res);                        
+                        return new TokenSymbol(res);
                 }
 
+            }
+            else
+            {
+                int i = from;
+                if(i + 2 < str.Length && str[i] == str[i+2] && str[i] == '\'')
+                {
+                    AbstractToken result = new TokenSymbol($"{str[i + 1]}");
+                    to = i + 3;
+                    return result;
+                }
             }
             return null;
         }

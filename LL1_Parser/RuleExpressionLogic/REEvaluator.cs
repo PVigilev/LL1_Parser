@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LL1_Parser
+namespace MFFParser
 {
 #if DEBUG
     public
@@ -26,7 +26,7 @@ namespace LL1_Parser
             object[] args;
             Type[] types;
             args = EvaluateExpressions(mc.Args, out types);
-            var method= mc.Type.GetMethod(mc.MethodName, types);
+            var method = mc.Type.GetMethod(mc.MethodName, types);
             if (method == null)
                 throw new MethodNotFoundException($"Static method {mc.Type.FullName}.{mc.MethodName} with passed argument types was not found");
             if (!method.IsStatic)
@@ -40,8 +40,8 @@ namespace LL1_Parser
         {
             object context = imc.Context.Evaluate(this);
             Type contextType = context.GetType();
-            if (!contextType.IsAssignableFrom(imc.Type))
-                throw new ParserTypeErrorException($"Type {contextType.FullName} is not assignable from {imc.Type.FullName}, so the method {imc.MethodName} can not be invoked with context of type {contextType.FullName}");
+            //if (!contextType.IsAssignableFrom(imc.Type))
+                //throw new ParserTypeErrorException($"Type {contextType.FullName} is not assignable from {imc.Type.FullName}, so the method {imc.MethodName} can not be invoked with context of type {contextType.FullName}");
             Type[] argTypes;
             object[] args = EvaluateExpressions(imc.Args, out argTypes);
             var method = imc.Type.GetMethod(imc.MethodName, argTypes);

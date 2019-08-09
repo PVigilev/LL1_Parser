@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser
+namespace MFFParser
 {
     /// <summary>
     /// Factory-method pattern for creating RuleExpressions
@@ -47,6 +47,11 @@ namespace LL1_Parser
         protected List<RuleExpressionFactory> Args;
         public abstract void AddNamePart(string name);
         public abstract void AddArgument(RuleExpressionFactory arg);
+        public InvokableCreator(string mname, RuleExpressionFactory[] a)
+        {
+            FullNameBuilder = new StringBuilder(mname);
+            Args = new List<RuleExpressionFactory>(a);
+        }
     }
 #if DEBUG
     public
@@ -62,10 +67,8 @@ namespace LL1_Parser
             Args.Add(arg ?? throw new ArgumentNullException($"RuleExpressionFactory argument is null"));
         }
         public StaticMethodCallingCreator(string mname, RuleExpressionFactory[] a)
-        {
-            FullNameBuilder = new StringBuilder(mname);
-            Args = new List<RuleExpressionFactory>(a);
-        }
+            :base(mname, a)
+        {}
         public override RuleExpression Create(AssembliesAccessWrapper assemblies)
         {
             var FullMethodName = FullNameBuilder.ToString();
@@ -98,10 +101,7 @@ namespace LL1_Parser
             Args.Add(arg ?? throw new ArgumentNullException($"RuleExpressionFactory argument is null"));
         }
         public ConstructorCallingCreator(string mname, RuleExpressionFactory[] a)
-        {
-            FullNameBuilder = new StringBuilder(mname);
-            Args = new List<RuleExpressionFactory>(a);
-        }
+        : base(mname, a) { }
 
         public override RuleExpression Create(AssembliesAccessWrapper assemblies)
         {
@@ -123,12 +123,13 @@ namespace LL1_Parser
 #endif
     class InstanceMethodCallingCreator : InvokableCreator
     {
+        RuleExpressionFactory _context = null;
         public RuleExpressionFactory Context
         {
-            private get { return Context; }
+            private get { return _context; }
             set
             {
-                Context = value ?? throw new ArgumentNullException($"Context must be non-null");
+                _context = value ?? throw new ArgumentNullException($"Context must be non-null");
             }
         }
         public override void AddNamePart(string name)
@@ -141,11 +142,8 @@ namespace LL1_Parser
         {
             Args.Add(arg ?? throw new ArgumentNullException($"RuleExpressionFactory argument is null"));
         }
-        public InstanceMethodCallingCreator(string mname, RuleExpressionFactory[] a)
-        {
-            FullNameBuilder = new StringBuilder(mname);
-            Args = new List<RuleExpressionFactory>(a);
-        }
+        public InstanceMethodCallingCreator(string mname, RuleExpressionFactory[] a, RuleExpressionFactory context)
+        : base(mname, a) { Context = context; }
         public override RuleExpression Create(AssembliesAccessWrapper assemblies)
         {
             var context = Context.Create(assemblies);

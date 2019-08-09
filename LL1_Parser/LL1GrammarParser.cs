@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser
+namespace MFFParser
 {
     using Bootstrap;
     public class LL1GrammarParser<T, UToken> where UToken: IToken
@@ -12,17 +12,17 @@ namespace LL1_Parser
 
         private LL1GrammarParser() { }
 
-        public LL1GrammarParser(string grammar, ILexer<UToken> lexer, IDictionary<string, UToken> TerminalNames, string StartSymbol, System.Reflection.Assembly[] assemblies)
+        public LL1GrammarParser(string grammar, ILexer<UToken> lexer, IDictionary<string, UToken> TerminalNames, System.Reflection.Assembly[] assemblies)
         {
-            Lexer = lexer;
-            GrammarCreator creator = ParseGrammar(grammar);
-            creator.Assemblies = new AssembliesAccessWrapper(assemblies);
-            creator.ExpressionEvaluator = new REEvaluator();
-            foreach (var kvp in TerminalNames)
-                creator.RegisterTerminal(kvp.Key, kvp.Value);
-            creator.SetStartSymbol(StartSymbol);
-            var Grammar = creator.Create();
-            Parser = new RDParser<UToken>(Grammar);
+            // grammar parsing using GrammarDefinitionParser
+            Bootstrap.Lexer grammar_lexer = new Lexer();
+            IList<AbstractToken> tokens = grammar_lexer.Tokenize(grammar);
+            GrammarCreator creator = new GrammarCreator(new REEvaluator(), new AssembliesAccessWrapper(assemblies));
+            foreach (var name_term in TerminalNames)
+                creator.RegisterTerminal(name_term.Key, name_term.Value);
+            GrammarDefinitionParser.ParseGrammarBase(tokens, ref creator);
+            Parser = new RDParser<UToken>(creator.Create());
+            Lexer = lexer ?? throw new ArgumentNullException("Lexer is null");
         }
 
         public T Parse(string str)
@@ -40,12 +40,5 @@ namespace LL1_Parser
             catch { result = default(T); return false; }
         }
 
-        private static GrammarCreator ParseGrammar(string grammar)
-        {
-            LL1GrammarParser<GrammarCreator, AbstractToken> ParserForUsersGrammar = new LL1GrammarParser<GrammarCreator, AbstractToken>();
-            ParserForUsersGrammar.Lexer = new Lexer();
-            ParserForUsersGrammar.Parser = new RDParser<AbstractToken>(Grammar.SpecialGrammar);
-            return ParserForUsersGrammar.Parse(grammar);
-        }
     }
 }

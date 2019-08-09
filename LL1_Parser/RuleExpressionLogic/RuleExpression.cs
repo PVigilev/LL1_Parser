@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser
+namespace MFFParser
 {
 #if DEBUG
     public
@@ -29,6 +29,7 @@ namespace LL1_Parser
         {
             if (n < 0)
                 throw new ArgumentException("Number of variable must be greater or equal than zero");
+            NumberOfVariable = n;
         }
         public override object Evaluate(RuleExpressionEvaluator evaluator)
         {

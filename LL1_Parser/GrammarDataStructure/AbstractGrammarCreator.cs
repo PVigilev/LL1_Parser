@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using LL1_Parser.Bootstrap;
+using MFFParser.Bootstrap;
 
 
-namespace LL1_Parser
+namespace MFFParser
 {
     public abstract class AbstractGrammarCreator
     {

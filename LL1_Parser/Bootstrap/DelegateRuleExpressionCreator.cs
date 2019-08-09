@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser.Bootstrap
+namespace MFFParser.Bootstrap
 {
 #if DEBUG
     public

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser
+namespace MFFParser
 {
 #if DEBUG
     public
@@ -34,15 +34,15 @@ namespace LL1_Parser
 
             if (ParsingResult == null)
                 throw new ArgumentNullException("Parsing result is null");
-            if (ParsingResult.Length == 0)
-                throw new ArgumentException("Parsing result is empty");
+            //if (ParsingResult.Length == 0)
+                //throw new ArgumentException("Parsing result is empty");
             evaluator.ParsingResult = ParsingResult;
             for(int i = 0; i < expressions.Length - 1; i++)
             {                
                 expressions[i].Evaluate(evaluator);
             }
-            var res = expressions[expressions.Length].Evaluate(evaluator);
-            if (res.GetType() == typeof(void))
+            var res = expressions[expressions.Length - 1].Evaluate(evaluator);
+            if (res == null || res.GetType() == typeof(void))
                 throw new ParserReturnValueException("The last expression has to return value");
             evaluator.ParsingResult = null;
             return res;

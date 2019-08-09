@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser
+namespace MFFParser
 {
-
+#if DEBUG
+    public
+#endif
     class GrammarCreator 
     {
         protected struct RulePair
@@ -75,12 +77,15 @@ namespace LL1_Parser
         /// </summary>
         protected Dictionary<NonTerminal, HashSet<RulePair>> ResultGrammarContentImage = new Dictionary<NonTerminal, HashSet<RulePair>>();
 
-        internal GrammarCreator() { }
+        internal GrammarCreator()
+        {
+            NameTerminalTable.Add("_empty_string_", Terminal.EmptyString);
+        }
         internal GrammarCreator(RuleExpressionEvaluator evaluator, AssembliesAccessWrapper assemblies)
+            :this()
         {
             ExpressionEvaluator = evaluator ?? throw new ArgumentNullException("Evaluator is null");
             Assemblies = assemblies ?? throw new ArgumentNullException("Assemblies wrapper is null");
-            NameTerminalTable.Add("_empty_string_", Terminal.EmptyString);
         }
         internal GrammarCreator(RuleExpressionEvaluator ev, AssembliesAccessWrapper wrapper, Dictionary<string, Terminal> name_terminal_table, Dictionary<IToken, Terminal> token_terminal_table)
             : this(ev, wrapper)
@@ -91,7 +96,13 @@ namespace LL1_Parser
             NameTerminalTable = name_terminal_table;
             TokenTerminalTable = token_terminal_table;
         }
-        internal GrammarCreator(RuleExpressionEvaluator ev, AssembliesAccessWrapper wrapper, Dictionary<string, IToken> name_token_table)
+
+#if DEBUG
+        public
+#else
+        internal
+#endif
+        GrammarCreator(RuleExpressionEvaluator ev, AssembliesAccessWrapper wrapper, Dictionary<string, IToken> name_token_table)
             : this(ev, wrapper)
         {
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
@@ -149,36 +160,82 @@ namespace LL1_Parser
                     throw new GrammarException($"Symbol {NonTerminalName} is already defined as a Terminal");
                 else
                 {
-                    nt = new NonTerminal();
+                    nt = new NonTerminal(NonTerminalName);
                     NameNTerminalTable.Add(NonTerminalName, nt);
                 }
             }
 
+            
 
 
             // resolving symbols in a rule
             Symbol[] symbols = new Symbol[Words.Length];
             for (int i = 0; i < Words.Length; i++)
             {
-                Symbol cur;
-                NonTerminal ntCur;
-                if (!NameNTerminalTable.TryGetValue(Words[i], out ntCur))
+                NonTerminal nt1;
+                Terminal tr;
+                if (NameNTerminalTable.TryGetValue(Words[i], out nt1))
                 {
-                    Terminal tCur;
-                    if (!NameTerminalTable.TryGetValue(Words[i], out tCur))
-                    {
-                        cur = new NonTerminal();
-                        NameNTerminalTable.Add(Words[i], (NonTerminal)cur);
-                    }
-                    else cur = tCur;
+                    symbols[i] = nt1;
                 }
-                else cur = ntCur;
-                symbols[i] = cur;
+                else if(NameTerminalTable.TryGetValue(Words[i], out tr))
+                {
+                    symbols[i] = tr;
+                }
+                else
+                {
+                    nt1 = new NonTerminal(Words[i]);
+                    symbols[i] = nt1;
+                    NameNTerminalTable.Add(Words[i], nt1);
+                }
             }
 
             if (!ResultGrammarContentImage.ContainsKey(nt))
                 ResultGrammarContentImage.Add(nt, new HashSet<RulePair>());
             ResultGrammarContentImage[nt].Add(new RulePair(symbols, actions));
+
+            // setting starting symbol the first one be default
+            if (StartSymbol == null)
+                StartSymbol = nt;
+        }
+
+
+        public bool IsCorrect(out Exception ex)
+        {
+            foreach(var nt_ruleimg in ResultGrammarContentImage)
+            {
+                foreach(var rule in nt_ruleimg.Value)
+                {
+                    foreach(var symbol in rule.Symbols)
+                    {
+                        if(symbol is NonTerminal nt)
+                        {
+                            if (!NameNTerminalTable.ContainsValue(nt))
+                            {
+                                ex = new GrammarException("There exist NonTerminal on the right-hand side of some rule, such that it is not represented in the table of terminal names");
+                                return false;
+                            }
+                            if (!ResultGrammarContentImage.ContainsKey(nt))
+                            {
+                                string nt_name ="";
+                                foreach(var kvp in NameNTerminalTable)
+                                {
+                                    if (kvp.Value == nt)
+                                    {
+                                        nt_name = kvp.Key;
+                                        break;
+                                    }
+                                }
+                                ex = new GrammarException($"There exist NonTerminal {nt_name} on the right-hand side of some rule, such that it doesn't have any rule for it");
+                                return false;
+                            }                               
+                            
+                        }
+                    }
+                }
+            }
+            ex = null;
+            return true;
         }
 
         /// <summary>
@@ -187,6 +244,9 @@ namespace LL1_Parser
         /// <returns> Created instance of Grammar </returns>
         internal Grammar Create()
         {
+            Exception exc;
+            if (!IsCorrect(out exc))
+                throw exc;
             Dictionary<NonTerminal, HashSet<Rule>> Result = new Dictionary<NonTerminal, HashSet<Rule>>();
             foreach (var kvp in ResultGrammarContentImage)
             {
@@ -216,5 +276,8 @@ namespace LL1_Parser
                 throw new GrammarException($"Nonterminal {name} does not exist");
             StartSymbol = nt;
         }
+
+
+       
     }
 }

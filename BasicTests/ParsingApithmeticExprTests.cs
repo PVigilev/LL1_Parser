@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using LL1_Parser;
+using MFFParser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 
 namespace ResultTests
 {
-    using ArithmeticsTest;
+    using ArithmeticExpr;
     [TestClass]
     public class ParsingApithmeticExprTests
     {
@@ -34,9 +34,9 @@ namespace ResultTests
                 return false;
             }
         }
-        sealed class TokenInt : AbstractToken, ITokenWithValue<int>
+        sealed class TokenInt : AbstractToken, ITokenWithValue<object>
         {
-            public int Value { get; }
+            public object Value { get; }
 
             public TokenInt(int num) { Value = num; }
             public override bool IsCompatible(IToken other)
@@ -64,7 +64,9 @@ namespace ResultTests
                 HashSet<char> separators = new HashSet<char> { ' ', '+', '-', '/', '*', '(', ')' };
                 for (int i = 0; i < str.Length; i++)
                 {
-                    if (str[i] == '+')
+                    if (char.IsWhiteSpace(str[i]))
+                        continue;
+                    else if (str[i] == '+')
                         tokens.Add(Token.Instances[Token.TokenType.plus]);
                     else if (str[i] == '-')
                         tokens.Add(Token.Instances[Token.TokenType.minus]);
@@ -80,7 +82,7 @@ namespace ResultTests
                     {
                         int j = (str[i] == '-' ? i + 1 : i);
                         bool ok = true;
-                        for (; j < str.Length; j++) ;
+                        for (; j < str.Length; j++) 
                         {
                             if (!char.IsDigit(str[j]))
                             {
@@ -123,8 +125,12 @@ namespace ResultTests
             if (ExprGrammar == null)
                 Assert.Fail("Problem with reading from .grm-file");
             Lexer lexer = new Lexer();
-            LL1GrammarParser<Expr, AbstractToken> parser
-                = new LL1GrammarParser<Expr, AbstractToken>(ExprGrammar, lexer, lexer.NameTokenTBL, "Expr", new System.Reflection.Assembly[] { System.Reflection.Assembly.GetExecutingAssembly() });
+            LL1GrammarParser<object, AbstractToken> parser
+                = new LL1GrammarParser<object, AbstractToken>(ExprGrammar, lexer, lexer.NameTokenTBL, new System.Reflection.Assembly[] { typeof(Expr).Assembly });
+            var res = parser.Parse("1 + 2");
         }
+
+       
+
     }
 }
