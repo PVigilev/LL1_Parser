@@ -1,0 +1,4 @@
+﻿Expr : var { new Lambda.LVar($0); }
+Expr : '(' Expr1 ')' { $1; }
+Expr1 : Expr Expr { new Lambda.LApplication($0, $1); }
+Expr1 : '\' var '.' Expr { new Lambda.LAbstraction($1, $3); }

@@ -7,24 +7,8 @@ using System.Collections.Generic;
 namespace BasicTests
 {
     [TestClass]
-    public class BootstrapingTests
+    public class DefaultTokensTest
     {
-        /*/
-        [TestMethod]
-        public void CreatingSpecialGrammarTest()
-        {
-            Grammar grm = Grammar.SpecialGrammar;
-            try
-            {
-                if (grm == null)
-                    Assert.Fail();
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail(ex.Message);
-            }
-        }
-        /**/
         private bool CompatiableTokenSequence(IList<AbstractToken> tokens, IList<AbstractToken> expected)
         {
             if (tokens.Count != expected.Count)
@@ -39,7 +23,7 @@ namespace BasicTests
 
 
         [TestMethod]
-        public void BootstrapLexerTest1()
+        public void DefaultTokenizerTest()
         {
             string str = "\"string name1\" name2 : .)({}'}'{123.32 12343 $123 _name3 new static newstatic " + Environment.NewLine + "static_new -123";
             var expected = new List<AbstractToken>(new AbstractToken[] {

@@ -49,14 +49,11 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Expr.cs" />
-    <Compile Include="ParsingApithmeticExprTests.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="SimpleArithmeticsGrammar.grm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LL1_Parser\LL1_Parser.csproj">

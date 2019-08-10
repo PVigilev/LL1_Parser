@@ -1,8 +1,0 @@
-﻿Expr : Term + Expr { new ArithmeticsTest.Addition($0, $1); }
-Expr : Term - Expr { new ArithmeticsTest.Substract($0, $1); }
-Expr : Term { $0; }
-Term : Factor * Term { new ArithmeticsTest.Multiply($0, $1); }
-Term : Factor / Term { new ArithmeticsTest.Divide($0, $1); }
-Term : Factor { $0; }
-Factor: (Expr) { $1; }
-Factor: int { $1; }
