@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
-#if DEBUG
-    public
-#endif
+
     /// <summary>
     /// Represents expression that have to be evaluated after succes parsing
     /// </summary>
-    class RuleAction
+    public class RuleAction
     {
         RuleExpression[] expressions;
 

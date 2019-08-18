@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
     public interface ILexer<T> where T : IToken
     {

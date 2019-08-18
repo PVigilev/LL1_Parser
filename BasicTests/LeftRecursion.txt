@@ -1,0 +1,8 @@
+﻿Expr: Expr '+' Term { static BasicDS.IntArithmetics.Add($0, $2); }
+Expr: Expr '-' Term { static BasicDS.IntArithmetics.Substract($0, $2); }
+Expr: Term { $0; }
+Term: Term '*' Factor { static BasicDS.IntArithmetics.Multiply($0, $2); }
+Term: Term '*' Factor { static BasicDS.IntArithmetics.Divide($0, $2); }
+Term: Factor { $0; }
+Factor: '(' Expr ')' { $1; }
+Factor: int { $0; }

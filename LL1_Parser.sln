@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyWrapperTests", "Ass
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicTests", "BasicTests\BasicTests.csproj", "{85FD0777-FF3E-43B2-B8A4-EEB0883B7326}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LamdaExpressionComparement", "LamdaExpressionComparement\LamdaExpressionComparement.csproj", "{7D598410-90BB-4D70-A5B4-039AFDB0D99F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,7 +27,10 @@ Global
 		{85FD0777-FF3E-43B2-B8A4-EEB0883B7326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{85FD0777-FF3E-43B2-B8A4-EEB0883B7326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85FD0777-FF3E-43B2-B8A4-EEB0883B7326}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85FD0777-FF3E-43B2-B8A4-EEB0883B7326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D598410-90BB-4D70-A5B4-039AFDB0D99F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D598410-90BB-4D70-A5B4-039AFDB0D99F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D598410-90BB-4D70-A5B4-039AFDB0D99F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D598410-90BB-4D70-A5B4-039AFDB0D99F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

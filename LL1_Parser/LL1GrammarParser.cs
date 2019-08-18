@@ -1,30 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
-    using Bootstrap;
+    using Initialization;
+
+    /// <summary>
+    /// Recursive Descent Parser for LL(1) grammar
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="UToken"></typeparam>
     public class LL1GrammarParser<T, UToken> where UToken: IToken
     {
         private ILexer<UToken> Lexer;
         private AbstractParser<UToken> Parser;
-
+        
         private LL1GrammarParser() { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="grammar">Content of grammar-file</param>
+        /// <param name="lexer"></param>
+        /// <param name="TerminalNames">Names of terminals</param>
+        /// <param name="assemblies">Array of assemblies where framewrok will search for types and methods used in "grammar"</param>
+        /// <exception cref="LeftRecursionGrammarException"></exception>
         public LL1GrammarParser(string grammar, ILexer<UToken> lexer, IDictionary<string, UToken> TerminalNames, System.Reflection.Assembly[] assemblies)
         {
             // grammar parsing using GrammarDefinitionParser
-            Bootstrap.Lexer grammar_lexer = new Lexer();
+            Initialization.Lexer grammar_lexer = new Lexer();
             IList<AbstractToken> tokens = grammar_lexer.Tokenize(grammar);
             GrammarCreator creator = new GrammarCreator(new REEvaluator(), new AssembliesAccessWrapper(assemblies));
             foreach (var name_term in TerminalNames)
                 creator.RegisterTerminal(name_term.Key, name_term.Value);
             GrammarDefinitionParser.ParseGrammarBase(tokens, ref creator);
-            Parser = new RDParser<UToken>(creator.Create());
+            Parser = new RecursiveDescentParser<UToken>(creator.Create());
             Lexer = lexer ?? throw new ArgumentNullException("Lexer is null");
         }
 
+
+        /// <summary>
+        /// Parse str
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        /// <exception cref="ParserTypeErrorException"></exception>
+        /// <exception cref="AmbiguousGrammarException"></exception>
+        /// <exception cref="FormatException"></exception>
+        /// <exception cref="ParserArgumentErrorException"></exception>
+        /// <exception cref="ParserUnknownTokenException"></exception>
         public T Parse(string str)
         {
             IList<UToken> tokens = Lexer.Tokenize(str);

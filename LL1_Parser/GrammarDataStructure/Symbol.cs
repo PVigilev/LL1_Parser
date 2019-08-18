@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
     /// <summary>
     /// The abstract class for a representation of a simgle symbol of the rule in a grammar
@@ -31,11 +31,10 @@ namespace MFFParser
         }
     }
 
-#if DEBUG
-    public
-#endif
-    class NonTerminal : Symbol
+
+    public class NonTerminal : Symbol
     {
+#if DEBUG
         public static int Count = 0;
         public readonly int ID;
         public readonly string Name;
@@ -48,5 +47,6 @@ namespace MFFParser
         {
             Name = s;
         }
+#endif
     }
 }

@@ -3,15 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
-#if DEBUG
-    public
-#endif
-    class Rule : IEnumerable<Symbol>
+
+    public class Rule : IEnumerable<Symbol>
     {
         Symbol[] Symbols;
-        public RuleAction Action { get; }
+        internal RuleAction Action { get; }
         public Rule(Symbol[] symbols, RuleAction action)
         {
             Symbols = symbols;

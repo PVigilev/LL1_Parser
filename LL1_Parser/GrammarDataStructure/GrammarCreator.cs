@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
 #if DEBUG
     public
@@ -160,7 +160,11 @@ namespace MFFParser
                     throw new GrammarException($"Symbol {NonTerminalName} is already defined as a Terminal");
                 else
                 {
+#if DEBUG
                     nt = new NonTerminal(NonTerminalName);
+#else
+                    nt = new NonTerminal();
+#endif
                     NameNTerminalTable.Add(NonTerminalName, nt);
                 }
             }
@@ -184,7 +188,11 @@ namespace MFFParser
                 }
                 else
                 {
+#if DEBUG
                     nt1 = new NonTerminal(Words[i]);
+#else
+                    nt1 = new NonTerminal();
+#endif
                     symbols[i] = nt1;
                     NameNTerminalTable.Add(Words[i], nt1);
                 }

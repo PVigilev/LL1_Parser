@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MFFParser
+namespace LL1_Parser
 {
 #if DEBUG
     public

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 { 
     /// <summary>
     /// Parses string with the grammar 
     /// </summary>
-    public static class GrammarDefinitionParser
+    internal static class GrammarDefinitionParser
     {
         /// <summary>
         /// Base procedure to parsing whole grammar

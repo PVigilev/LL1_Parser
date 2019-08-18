@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using System.Reflection;
-using MFFParser;
+using LL1_Parser;
 using System;
 
 namespace namespace1

@@ -1,0 +1,3 @@
+﻿List : List1 { BasicDS.ArrayN.Reverse($0); $0; }
+List1 : int List1 { BasicDS.ArrayN.Add($1, $0); $1; }
+List1 : _empty_string_ { new BasicDS.ArrayN(); }

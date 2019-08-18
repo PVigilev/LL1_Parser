@@ -1,15 +1,13 @@
-﻿using MFFParser.Bootstrap;
+﻿using LL1_Parser.Initialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
-#if DEBUG
-    public
-#endif
-    sealed class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
+
+    public sealed class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
     {
         public readonly NonTerminal StartSymbol;
         Dictionary<NonTerminal, HashSet<Rule>> Rules;
@@ -21,13 +19,11 @@ namespace MFFParser
                 throw new ArgumentNullException($"Set of rules is null");
             if (rules.Count == 0)
                 throw new ArgumentException("Set of rules is empty");
-            if (ev == null)
-                throw new ArgumentNullException("RuleExpressionEvaluator is null");
-            Rules = rules;
-            Evaluator = ev;
+            Rules = rules ?? throw new ArgumentNullException("Set of rules is null");
+            Evaluator = ev ?? throw new ArgumentNullException("RuleExpressionEvaluator is null");
             if (!Rules.ContainsKey(start))
                 throw new GrammarException($"Starting non-terminal symbol is not defined in the grammar");
-            StartSymbol = start;
+            StartSymbol = start ?? throw new ArgumentNullException("Start symbol is null");
         }
 
         public IEnumerable<Rule> this[NonTerminal nt]

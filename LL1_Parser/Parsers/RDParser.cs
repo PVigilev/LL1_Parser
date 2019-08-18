@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
-#if DEBUG
-    public
-#endif
-    class RDParser<Token> : AbstractParser<Token> where Token : IToken
+
+    public class RecursiveDescentParser<Token> : AbstractParser<Token> where Token : IToken
     {
-        internal RDParser(Grammar grm) : base(grm) { }
+        internal RecursiveDescentParser(Grammar grm) : base(grm)
+        {
+            LeftRecursionChecker.Instance.Check(grm, true);
+        }
         public override object Parse(IList<Token> tokens)
         {
             int cur = 0;
             object result = ParseNonTerminal(Grammar.StartSymbol, tokens, ref cur);
             if (result == NotParsedObject.Instance)
-                throw new FormatException($"Grammar does not generate an input sequence");
+                throw new FormatException($"Grammar does not generate an input string");
             return result;
         }
-
+        
 
         private object ParseNonTerminal(NonTerminal nt, IList<Token> tokens, ref int cur)
         {
@@ -30,8 +31,15 @@ namespace MFFParser
 
                 if (res != NotParsedObject.Instance)
                 {
-                    result = res;
-                    break;
+                    if (result == NotParsedObject.Instance)
+                    {
+                        result = res;
+                        break;
+                    }
+                    else
+                    {
+                        throw new AmbiguousGrammarException("There are at least two rules such that they generate an input string");
+                    }
                 }
                 else cur = backtrack;
             }

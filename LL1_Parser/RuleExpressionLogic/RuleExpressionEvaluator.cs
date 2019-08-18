@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
-#if DEBUG
-    public
-#endif
+
     /// <summary>
     /// class for evaluation of RuleExpression.
     /// Used Visitor-template. Visitor part
     /// </summary>
-    abstract class RuleExpressionEvaluator
+    public abstract class RuleExpressionEvaluator
     {
         public abstract object[] ParsingResult { get; set; }
         public abstract object Evaluate(Constant c);

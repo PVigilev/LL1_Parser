@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace MFFParser
+namespace LL1_Parser
 {
 
     public abstract class AbstractParser<Token> where Token : IToken
