@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LL1_Parser
 {
@@ -55,7 +53,7 @@ namespace LL1_Parser
         {
             Type = t;
             MethodName = mname;
-            Args = a;            
+            Args = a;
         }
 
         public override object Evaluate(RuleExpressionEvaluator evaluator)

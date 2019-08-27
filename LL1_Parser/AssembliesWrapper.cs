@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AssemblyWrapperTests")]
 namespace LL1_Parser
 {
 
     /// <summary>
-    /// Give some functions for working with assemblies, types and other Reflection-stuff
-    /// </summary>
-#if DEBUG
-    public
-#else
-internal
-#endif
+    /// Wrapper around an array of assemblies for finding types and methods inside them.
+    /// </summary>    
     class AssembliesAccessWrapper
     {
         Assembly[] assemblies;
@@ -43,7 +38,7 @@ internal
                 throw new ArgumentNullException("Typename is null");
             if (!CheckFormat(fullTypeName))
                 throw new FormatException($"The string {fullTypeName} is in wrong format and does not represent any type");
-            
+
             foreach (var asm in assemblies)
             {
                 Type t = FindTypeInAssembly(fullTypeName, asm);
@@ -64,7 +59,7 @@ internal
             Type result = null;
 
             int cur_dot = correctFullTypeName.IndexOf('.', 0);
-            for (; cur_dot > 0 && cur_dot < correctFullTypeName.Length; cur_dot = correctFullTypeName.IndexOf('.', cur_dot + 1)) 
+            for (; cur_dot > 0 && cur_dot < correctFullTypeName.Length; cur_dot = correctFullTypeName.IndexOf('.', cur_dot + 1))
             {
                 result = asm.GetType(correctFullTypeName.Substring(0, cur_dot));
                 if (result != null)
@@ -73,19 +68,19 @@ internal
                 }
             }
 
-            if(cur_dot < 0 && result == null)
+            if (cur_dot < 0 && result == null)
             {
                 return asm.GetType(correctFullTypeName);
             }
 
             // find nested type
-            while(cur_dot > 0 && cur_dot < correctFullTypeName.Length)
+            while (cur_dot > 0 && cur_dot < correctFullTypeName.Length)
             {
                 string name_nested_type = null;
                 int next_dot = correctFullTypeName.IndexOf('.', cur_dot + 1);
                 if (next_dot < 0)
                 {
-                    name_nested_type = correctFullTypeName.Substring(cur_dot+1);
+                    name_nested_type = correctFullTypeName.Substring(cur_dot + 1);
                 }
                 else
                 {
@@ -112,7 +107,7 @@ internal
                 return false;
 
             bool firstSym = true;
-            for(int i = 0; i < fullname.Length; i++)
+            for (int i = 0; i < fullname.Length; i++)
             {
                 if (firstSym)
                 {
@@ -136,10 +131,10 @@ internal
                     }
                     else return false;
                 }
-            }            
+            }
             return !firstSym;
         }
-        
+
         /// <summary>
         /// Finds method with the specified name
         /// </summary>
@@ -157,15 +152,15 @@ internal
             Type t = FindType(fullMethodName.Substring(0, lastDot));
             MethodInfo method = null;
 
-            if (types != null)            
-                method = t.GetMethod(methodname, types);            
+            if (types != null)
+                method = t.GetMethod(methodname, types);
             else
                 method = t.GetMethod(methodname);
-            
+
 
             return method;
         }
-        
+
         /// <summary>
         /// Finds a constructor for type with specified name.
         /// </summary>
@@ -193,7 +188,7 @@ internal
                 types[i] = (objects[i] == null ? typeof(object) : objects[i].GetType());
             return types;
         }
-        
+
         /// <summary>
         /// Invoke method with specified name 
         /// </summary>

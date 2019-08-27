@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LL1_Parser
 {
@@ -24,7 +22,8 @@ namespace LL1_Parser
             CompatibleToken = Compatible;
         }
         public IToken CompatibleToken { get; }
-        public bool IsCompatiable(IToken token) {
+        public bool IsCompatiable(IToken token)
+        {
             if (token == null)
                 throw new ArgumentNullException();
             return token.IsCompatible(CompatibleToken);

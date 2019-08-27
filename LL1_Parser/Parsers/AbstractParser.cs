@@ -3,14 +3,18 @@ using System.Collections.Generic;
 
 namespace LL1_Parser
 {
-
-    public abstract class AbstractParser<Token> where Token : IToken
+    /// <summary>
+    /// Abstract class represents parser-engine
+    /// </summary>
+    /// <typeparam name="Token">Type of token's data structure</typeparam>
+    abstract class AbstractParser<Token> where Token : IToken
     {
         internal class NotParsedObject
         {
             private NotParsedObject() { }
             public static readonly NotParsedObject Instance = new NotParsedObject();
         }
+
         protected Grammar Grammar;
         internal AbstractParser(Grammar grm)
         {

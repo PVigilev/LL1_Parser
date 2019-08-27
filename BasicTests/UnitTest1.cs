@@ -188,7 +188,7 @@ namespace BasicTests
         public void LeftRecursionCheckerTest()
         {
             Exception exception = null;
-            string filename = @"C:\Users\Paul\Desktop\prg\cs\SemesterProject\LL1_Parser\BasicTests\LeftRecursion.txt";
+            string filename = @"..\..\LeftRecursion.txt";
             string grammar;
             using (StreamReader reader = new StreamReader(filename))
             {
@@ -219,7 +219,7 @@ namespace BasicTests
         [TestMethod]
         public void ListGrammarTest()
         {
-            string filename = @"C:\Users\Paul\Desktop\prg\cs\SemesterProject\LL1_Parser\BasicTests\SequenceGrammar.txt";
+            string filename = @"..\..\SequenceGrammar.txt";
             string grammar;
             using (StreamReader reader = new StreamReader(filename))
             {

@@ -1,11 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace LL1_Parser
 {
-    public interface ILexer<T> where T : IToken
+
+    /// <summary>
+    /// Interface for user-defined lexer that is used for tokenization an input
+    /// </summary>
+    /// <typeparam name="Token">Type that represents a token data-structure</typeparam>
+    public interface ILexer<Token> where Token : IToken
     {
-        IList<T> Tokenize(string str);
+        /// <summary>
+        /// Tokenization of an input string
+        /// </summary>
+        /// <param name="str">Input string that has to be tokenized</param>
+        /// <returns>List of tokens</returns>
+        IList<Token> Tokenize(string str);
     }
 }

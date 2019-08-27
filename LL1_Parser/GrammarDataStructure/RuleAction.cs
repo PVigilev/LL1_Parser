@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LL1_Parser
 {
@@ -8,7 +6,7 @@ namespace LL1_Parser
     /// <summary>
     /// Represents expression that have to be evaluated after succes parsing
     /// </summary>
-    public class RuleAction
+    class RuleAction
     {
         RuleExpression[] expressions;
 
@@ -33,10 +31,10 @@ namespace LL1_Parser
             if (ParsingResult == null)
                 throw new ArgumentNullException("Parsing result is null");
             //if (ParsingResult.Length == 0)
-                //throw new ArgumentException("Parsing result is empty");
+            //throw new ArgumentException("Parsing result is empty");
             evaluator.ParsingResult = ParsingResult;
-            for(int i = 0; i < expressions.Length - 1; i++)
-            {                
+            for (int i = 0; i < expressions.Length - 1; i++)
+            {
                 expressions[i].Evaluate(evaluator);
             }
             var res = expressions[expressions.Length - 1].Evaluate(evaluator);
@@ -46,7 +44,7 @@ namespace LL1_Parser
             return res;
         }
     }
-    
 
-    
+
+
 }

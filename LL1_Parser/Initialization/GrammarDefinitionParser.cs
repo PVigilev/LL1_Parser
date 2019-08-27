@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LL1_Parser
-{ 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BasicTests")]
+namespace LL1_Parser.Initialization
+{
     /// <summary>
-    /// Parses string with the grammar 
+    /// Parse string with the grammar 
     /// </summary>
-    internal static class GrammarDefinitionParser
+    static class GrammarDefinitionParser
     {
         /// <summary>
         /// Base procedure to parsing whole grammar
@@ -22,14 +23,14 @@ namespace LL1_Parser
             List<ValueTuple<string, string[], RuleExpressionFactory[]>> grammarContent;
             try
             {
-                grammarContent = ParseAllGrammar(tokens, ref cur);               
+                grammarContent = ParseAllGrammar(tokens, ref cur);
             }
             catch (IndexOutOfRangeException ex)
             {
                 throw new ParserErrorException("Unexpected end of file", ex);
             }
-            
-            foreach(var rule_content in grammarContent)
+
+            foreach (var rule_content in grammarContent)
                 result.RegisterRule(rule_content.Item1, rule_content.Item2, rule_content.Item3);
         }
 
@@ -58,10 +59,10 @@ namespace LL1_Parser
         /// <param name="tokens"></param>
         /// <param name="cur"></param>
         /// <returns></returns>
-        public static ValueTuple<string,string[],RuleExpressionFactory[]> ParseRule(IList<AbstractToken> tokens, ref int cur)
+        public static ValueTuple<string, string[], RuleExpressionFactory[]> ParseRule(IList<AbstractToken> tokens, ref int cur)
         {
             ValueTuple<string, string[], RuleExpressionFactory[]> result = new ValueTuple<string, string[], RuleExpressionFactory[]>();
-            
+
             // parse name of non-terminal
             if (!(tokens[cur] is TokenSymbol tknName))
                 throw new ParserErrorException($"Syntax error. Symbol-name expected");
@@ -71,7 +72,7 @@ namespace LL1_Parser
                 throw new ParserErrorException($"Syntax error. Symbol ':' expected");
             cur++;
             List<string> symbols = new List<string>(1);
-            
+
             // parse symbol-sequence
             do
             {
@@ -88,7 +89,7 @@ namespace LL1_Parser
             result.Item3 = Exprs;
             return result;
         }
-        
+
         /// <summary>
         /// Parses parts of the grammar:
         /// Exprs : Expr ';' Exprs1
@@ -127,7 +128,7 @@ namespace LL1_Parser
         public static RuleExpressionFactory ParseExpr(IList<AbstractToken> tokens, ref int cur)
         {
             RuleExpressionFactory result = null;
-            if(tokens[cur] == TokenKeyWord.Instances[TokenKeyWord.KeyWordType.newKW])
+            if (tokens[cur] == TokenKeyWord.Instances[TokenKeyWord.KeyWordType.newKW])
             {
                 cur++;
                 string name = ParseName(tokens, ref cur);
@@ -139,7 +140,7 @@ namespace LL1_Parser
                 if (tokens[cur] != SimpleToken.Instances[SimpleToken.TokenType.CB])
                     throw new ParserErrorException("Syntax error. ')' expected");
             }
-            else if(tokens[cur] == TokenKeyWord.Instances[TokenKeyWord.KeyWordType.staticKW])
+            else if (tokens[cur] == TokenKeyWord.Instances[TokenKeyWord.KeyWordType.staticKW])
             {
                 cur++;
                 string name = ParseName(tokens, ref cur);

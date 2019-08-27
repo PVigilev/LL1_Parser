@@ -2,13 +2,11 @@
 
 namespace LL1_Parser
 {
-#if DEBUG
-    public
-#endif
+
     class REEvaluator : RuleExpressionEvaluator
     {
         public override object[] ParsingResult { get; set; }
-    
+
         public override object Evaluate(Constant c)
         {
             return c.Value;
@@ -31,7 +29,7 @@ namespace LL1_Parser
                 throw new MethodNotFoundException($"Static method {mc.Type.FullName}.{mc.MethodName} with passed argument types was not found");
             if (!method.IsStatic)
                 throw new MethodNotFoundException($"Static method {mc.Type.FullName}.{mc.MethodName} with passed argument types is not static");
-            if(!method.IsPublic)
+            if (!method.IsPublic)
                 throw new MethodNotFoundException($"Static method {mc.Type.FullName}.{mc.MethodName} with passed argument types is not public");
             return method.Invoke(null, args);
         }
@@ -41,7 +39,7 @@ namespace LL1_Parser
             object context = imc.Context.Evaluate(this);
             Type contextType = context.GetType();
             //if (!contextType.IsAssignableFrom(imc.Type))
-                //throw new ParserTypeErrorException($"Type {contextType.FullName} is not assignable from {imc.Type.FullName}, so the method {imc.MethodName} can not be invoked with context of type {contextType.FullName}");
+            //throw new ParserTypeErrorException($"Type {contextType.FullName} is not assignable from {imc.Type.FullName}, so the method {imc.MethodName} can not be invoked with context of type {contextType.FullName}");
             Type[] argTypes;
             object[] args = EvaluateExpressions(imc.Args, out argTypes);
             var method = imc.Type.GetMethod(imc.MethodName, argTypes);
@@ -60,7 +58,7 @@ namespace LL1_Parser
             Type[] types;
             args = EvaluateExpressions(cc.Args, out types);
             var constructor = cc.Type.GetConstructor(types);
-            if(constructor == null)
+            if (constructor == null)
                 throw new MethodNotFoundException($"Constructor for type {cc.Type.FullName} with passed types was not found");
             return constructor.Invoke(args);
         }
@@ -77,7 +75,7 @@ namespace LL1_Parser
             return res;
         }
 
-        
+
     }
 
 }

@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace LL1_Parser
+namespace LL1_Parser.Initialization
 {
-#if DEBUG
-    public
-#endif
+    /// <summary>
+    /// Abstract class for token data structure for initialization
+    /// </summary>
     abstract class AbstractToken : IToken
     {
         public abstract bool IsCompatible(IToken other);
     }
-#if DEBUG
-    public
-#endif
+
+    /// <summary>
+    /// Simple token representation for initialization
+    /// : ; , ( ) { } .
+    /// </summary>
     class SimpleToken : AbstractToken
     {
+        /// <summary>
+        /// Instances of tokens
+        /// </summary>
         public static readonly Dictionary<TokenType, SimpleToken> Instances = new Dictionary<TokenType, SimpleToken>();
         static SimpleToken()
         {
@@ -24,9 +27,9 @@ namespace LL1_Parser
         }
         private SimpleToken(TokenType type)
             => Type = type;
-        public enum TokenType { column, semicolumn, comma, OB, CB, OCB, CCB, dot}
+        public enum TokenType { column, semicolumn, comma, OB, CB, OCB, CCB, dot }
         public TokenType Type { get; }
-        
+
         public override bool IsCompatible(IToken other)
         {
             if (other.GetType() == typeof(SimpleToken))
@@ -35,10 +38,12 @@ namespace LL1_Parser
         }
     }
 
-#if DEBUG
-    public
-#endif
-    class TokenValue<T> : AbstractToken, ITokenWithValue<T>  where T : class
+
+    /// <summary>
+    /// Token with value implementation for initialization
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    class TokenValue<T> : AbstractToken, ITokenWithValue<T> where T : class
     {
         public TokenValue(T val)
         {
@@ -51,36 +56,41 @@ namespace LL1_Parser
             return other.GetType() == this.GetType();
         }
     }
-#if DEBUG
-    public
-#endif
+
+    /// <summary>
+    /// keeps name of some symbols name in grammar
+    /// </summary>
     class TokenSymbol : TokenValue<string>
     {
         public TokenSymbol(string val) : base(val)
         {
         }
     }
-#if DEBUG
-    public
-#endif
+
+    /// <summary>
+    /// keeps some int-value
+    /// </summary>
     class TokenInt : TokenValue<object>
     {
         public TokenInt(int val) : base(val)
         {
         }
     }
-#if DEBUG
-    public
-#endif
+
+
+    /// <summary>
+    /// keeps double-value
+    /// </summary>
     class TokenDouble : TokenValue<object>
     {
         public TokenDouble(double val) : base(val)
         {
         }
     }
-#if DEBUG
-    public
-#endif
+
+    /// <summary>
+    /// keeps string
+    /// </summary>
     class TokenString : TokenValue<string>
     {
         public TokenString(string val) : base(val)
@@ -88,19 +98,20 @@ namespace LL1_Parser
         }
     }
 
-#if DEBUG
-    public
-#endif
+    /// <summary>
+    /// keeps id of parsing-result in some rule
+    /// </summary>
     class TokenVarId : TokenValue<object>
     {
         public TokenVarId(uint val) : base(val)
         {
         }
     }
-    
-#if DEBUG
-    public
-#endif
+
+
+    /// <summary>
+    /// keeps id of some key-word (new, static)
+    /// </summary>
     class TokenKeyWord : AbstractToken
     {
         public enum KeyWordType { newKW, staticKW, }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace LL1_Parser
 {
@@ -12,7 +11,7 @@ namespace LL1_Parser
         public static LeftRecursionChecker Instance = new LeftRecursionChecker();
         private LeftRecursionChecker() { }
 
-        private enum ResultCode { HasTerminal, LeftRecursion, AllNullable};
+        private enum ResultCode { HasTerminal, LeftRecursion, AllNullable };
 
         /// <summary>
         /// True if the grammar does not contain left recursion
@@ -57,11 +56,11 @@ namespace LL1_Parser
         private static ResultCode CheckRule(Grammar grammar, Rule rule, NonTerminal nt, HashSet<NonTerminal> opened)
         {
             // finding left recursion or the first occurence of non-empty string terminal
-            foreach(var s in rule)
+            foreach (var s in rule)
             {
                 if (s == Terminal.EmptyString)
                     continue;
-                if(s is Terminal)
+                if (s is Terminal)
                     return ResultCode.HasTerminal;
                 else
                 {
@@ -96,7 +95,7 @@ namespace LL1_Parser
             opened.Add(nt);
 
             // finding left recursion or check if it is nullable
-            foreach(var rule in grm[nt])
+            foreach (var rule in grm[nt])
             {
                 var checkRule_result = CheckRule(grm, rule, nt, opened);
                 if (checkRule_result == ResultCode.HasTerminal)

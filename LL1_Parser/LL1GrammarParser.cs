@@ -6,15 +6,15 @@ namespace LL1_Parser
     using Initialization;
 
     /// <summary>
-    /// Recursive Descent Parser for LL(1) grammar
+    /// Parser for LL(1) grammar
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="UToken"></typeparam>
-    public class LL1GrammarParser<T, UToken> where UToken: IToken
+    /// <typeparam name="T">Type that has to be parsed</typeparam>
+    /// <typeparam name="UToken">Type of token data structure that is defined by the user</typeparam>
+    public class LL1GrammarParser<T, UToken> where UToken : IToken
     {
         private ILexer<UToken> Lexer;
         private AbstractParser<UToken> Parser;
-        
+
         private LL1GrammarParser() { }
 
         /// <summary>
@@ -40,10 +40,10 @@ namespace LL1_Parser
 
 
         /// <summary>
-        /// Parse str
+        /// Parse str using defined LL(1)-grammar
         /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
+        /// <param name="str">String that has to be parsed</param>
+        /// <returns>Parsed T-instance</returns>
         /// <exception cref="ParserTypeErrorException"></exception>
         /// <exception cref="AmbiguousGrammarException"></exception>
         /// <exception cref="FormatException"></exception>
@@ -58,6 +58,12 @@ namespace LL1_Parser
             throw new ParserTypeErrorException($"Result of parsing is not of type {typeof(T).FullName}");
         }
 
+        /// <summary>
+        /// Trying to parse "str" and put the result into "result"
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="result"></param>
+        /// <returns>True iff str was parsed correctly and "result" contains parsed data</returns>
         public bool TryParse(string str, out T result)
         {
             try { result = Parse(str); return true; }

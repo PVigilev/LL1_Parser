@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace LL1_Parser.Initialization
 {
 
-#if DEBUG
-    public
-#endif
-
     class Lexer : ILexer<AbstractToken>
     {
         HashSet<char> separators = new HashSet<char> { ' ', '.', ',', ':', ';', '(', ')', '{', '}', '\n', '\r', '"', '\'', '\t' };
-        Dictionary<string, TokenKeyWord> keywords = new Dictionary<string, TokenKeyWord> { { "new", TokenKeyWord.Instances[TokenKeyWord.KeyWordType.newKW] }, {"static", TokenKeyWord.Instances[TokenKeyWord.KeyWordType.staticKW] } };
+        Dictionary<string, TokenKeyWord> keywords = new Dictionary<string, TokenKeyWord> { { "new", TokenKeyWord.Instances[TokenKeyWord.KeyWordType.newKW] }, { "static", TokenKeyWord.Instances[TokenKeyWord.KeyWordType.staticKW] } };
         delegate AbstractToken Tokenizer(string str, int from, out int to);
         Tokenizer[] Tokenizers;
         public Lexer()
@@ -25,6 +19,12 @@ namespace LL1_Parser.Initialization
         }
 
         bool IsSeparator(char ch) => separators.Contains(ch);
+
+        /// <summary>
+        /// Tokenize an input string that contains a grammar definition
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public IList<AbstractToken> Tokenize(string str)
         {
             List<AbstractToken> result = new List<AbstractToken>();
@@ -40,7 +40,7 @@ namespace LL1_Parser.Initialization
 
                 int next = -1;
                 AbstractToken tkn = null;
-                foreach(var ft in Tokenizers)
+                foreach (var ft in Tokenizers)
                 {
                     if (tkn == null)
                         tkn = ft(str, i, out next);
@@ -54,6 +54,14 @@ namespace LL1_Parser.Initialization
             }
             return result;
         }
+
+        /// <summary>
+        /// Tokenize simple token (braces, comma, column, semicolumn, etc.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         SimpleToken SimpleTokenize(string str, int from, out int to)
         {
             SimpleToken result = null;
@@ -67,9 +75,9 @@ namespace LL1_Parser.Initialization
                 case ')': result = SimpleToken.Instances[SimpleToken.TokenType.CB]; break;
                 case '{': result = SimpleToken.Instances[SimpleToken.TokenType.OCB]; break;
                 case '}': result = SimpleToken.Instances[SimpleToken.TokenType.CCB]; break;
-                default:  break;
+                default: break;
             }
-            if(result == null)
+            if (result == null)
             {
                 to = from;
             }
@@ -79,10 +87,18 @@ namespace LL1_Parser.Initialization
             }
             return result;
         }
-        
+
+        /// <summary>
+        /// Tokenize a number (int or double)
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         AbstractToken NumberTokenize(string str, int from, out int to)
         {
-            if (str[from] == '-'||char.IsDigit(str[from])) {
+            if (str[from] == '-' || char.IsDigit(str[from]))
+            {
                 int i = str[from] == '-' ? from + 1 : from;
                 bool ok = true;
                 for (; i < str.Length; i++)
@@ -114,7 +130,11 @@ namespace LL1_Parser.Initialization
             return null;
         }
 
-        //TokenDouble
+        /// <summary>
+        /// tokenize double
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         TokenDouble DoubleTokenize(string str)
         {
             double res;
@@ -122,7 +142,12 @@ namespace LL1_Parser.Initialization
                 return null;
             return new TokenDouble(res);
         }
-        //TokenInt
+
+        /// <summary>
+        /// Tokenize int
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         TokenInt IntTokenize(string str)
         {
             int res;
@@ -136,10 +161,17 @@ namespace LL1_Parser.Initialization
         //TokenKeyWord
         ///////////////> AbstractToken
         //TokenName
+        /// <summary>
+        /// Tokenize single word and resolve if it is keyword or name
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         AbstractToken WordTokenize(string str, int from, out int to)
         {
             to = from;
-            if(str[from] == '_' || char.IsLetter(str[from]))
+            if (str[from] == '_' || char.IsLetter(str[from]))
             {
                 int i = from;
                 bool ok = true;
@@ -147,7 +179,7 @@ namespace LL1_Parser.Initialization
                 {
                     if (separators.Contains(str[i]))
                         break;
-                    if(!(str[i] == '_' || char.IsLetterOrDigit(str[i])))
+                    if (!(str[i] == '_' || char.IsLetterOrDigit(str[i])))
                     {
                         ok = false;
                         break;
@@ -170,7 +202,7 @@ namespace LL1_Parser.Initialization
             else
             {
                 int i = from;
-                if(i + 2 < str.Length && str[i] == str[i+2] && str[i] == '\'')
+                if (i + 2 < str.Length && str[i] == str[i + 2] && str[i] == '\'')
                 {
                     AbstractToken result = new TokenSymbol($"{str[i + 1]}");
                     to = i + 3;
@@ -180,11 +212,17 @@ namespace LL1_Parser.Initialization
             return null;
         }
 
-        //TokenString
+        /// <summary>
+        /// Tokenize string in double quotes
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         TokenString StringTokenize(string str, int from, out int to)
         {
             to = from;
-            if(str[from] == '"')
+            if (str[from] == '"')
             {
                 StringBuilder result = new StringBuilder();
                 bool ok = false;
@@ -212,16 +250,22 @@ namespace LL1_Parser.Initialization
             }
             return null;
         }
-        
-        //TokenVarId
+
+        /// <summary>
+        /// Tokenizes id in parsed result ($uint)
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         TokenVarId VarIdTokenize(string str, int from, out int to)
         {
-            if(str[from] == '$')
+            if (str[from] == '$')
             {
                 uint res = 0;
                 int i = from + 1;
                 bool ok = true;
-                for(; i < str.Length; i++)
+                for (; i < str.Length; i++)
                 {
                     if (char.IsDigit(str[i]))
                         res = (uint)(res * 10 + (str[i] - '0'));
@@ -245,6 +289,4 @@ namespace LL1_Parser.Initialization
             return null;
         }
     }
-
-
 }

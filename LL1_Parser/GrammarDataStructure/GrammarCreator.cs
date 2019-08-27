@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+
 
 namespace LL1_Parser
 {
-#if DEBUG
-    public
-#endif
-    class GrammarCreator 
+    class GrammarCreator
     {
         protected struct RulePair
         {
@@ -39,7 +36,7 @@ namespace LL1_Parser
         /// <summary>
         /// Assemblies that will be passed to each RuleExpressionFactory where the framework finds types and methods
         /// </summary>
-        public AssembliesAccessWrapper Assemblies { get; set; }
+        internal AssembliesAccessWrapper Assemblies { get; set; }
 
         /// <summary>
         /// ExpressionEvaluator that will be passed to Grammar instance
@@ -82,7 +79,7 @@ namespace LL1_Parser
             NameTerminalTable.Add("_empty_string_", Terminal.EmptyString);
         }
         internal GrammarCreator(RuleExpressionEvaluator evaluator, AssembliesAccessWrapper assemblies)
-            :this()
+            : this()
         {
             ExpressionEvaluator = evaluator ?? throw new ArgumentNullException("Evaluator is null");
             Assemblies = assemblies ?? throw new ArgumentNullException("Assemblies wrapper is null");
@@ -97,12 +94,8 @@ namespace LL1_Parser
             TokenTerminalTable = token_terminal_table;
         }
 
-#if DEBUG
-        public
-#else
-        internal
-#endif
-        GrammarCreator(RuleExpressionEvaluator ev, AssembliesAccessWrapper wrapper, Dictionary<string, IToken> name_token_table)
+
+        internal GrammarCreator(RuleExpressionEvaluator ev, AssembliesAccessWrapper wrapper, Dictionary<string, IToken> name_token_table)
             : this(ev, wrapper)
         {
             ExpressionEvaluator = ev ?? throw new ArgumentNullException($"Rule expression evaluator is not able to be null");
@@ -169,7 +162,7 @@ namespace LL1_Parser
                 }
             }
 
-            
+
 
 
             // resolving symbols in a rule
@@ -182,7 +175,7 @@ namespace LL1_Parser
                 {
                     symbols[i] = nt1;
                 }
-                else if(NameTerminalTable.TryGetValue(Words[i], out tr))
+                else if (NameTerminalTable.TryGetValue(Words[i], out tr))
                 {
                     symbols[i] = tr;
                 }
@@ -210,13 +203,13 @@ namespace LL1_Parser
 
         public bool IsCorrect(out Exception ex)
         {
-            foreach(var nt_ruleimg in ResultGrammarContentImage)
+            foreach (var nt_ruleimg in ResultGrammarContentImage)
             {
-                foreach(var rule in nt_ruleimg.Value)
+                foreach (var rule in nt_ruleimg.Value)
                 {
-                    foreach(var symbol in rule.Symbols)
+                    foreach (var symbol in rule.Symbols)
                     {
-                        if(symbol is NonTerminal nt)
+                        if (symbol is NonTerminal nt)
                         {
                             if (!NameNTerminalTable.ContainsValue(nt))
                             {
@@ -225,8 +218,8 @@ namespace LL1_Parser
                             }
                             if (!ResultGrammarContentImage.ContainsKey(nt))
                             {
-                                string nt_name ="";
-                                foreach(var kvp in NameNTerminalTable)
+                                string nt_name = "";
+                                foreach (var kvp in NameNTerminalTable)
                                 {
                                     if (kvp.Value == nt)
                                     {
@@ -236,8 +229,8 @@ namespace LL1_Parser
                                 }
                                 ex = new GrammarException($"There exist NonTerminal {nt_name} on the right-hand side of some rule, such that it doesn't have any rule for it");
                                 return false;
-                            }                               
-                            
+                            }
+
                         }
                     }
                 }
@@ -286,6 +279,6 @@ namespace LL1_Parser
         }
 
 
-       
+
     }
 }

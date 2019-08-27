@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace LL1_Parser
 {
 
-    public class Rule : IEnumerable<Symbol>
+    class Rule : IEnumerable<Symbol>
     {
         Symbol[] Symbols;
         internal RuleAction Action { get; }

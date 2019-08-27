@@ -7,16 +7,12 @@ namespace LL1_Parser
     /// <summary>
     /// Factory-method pattern for creating RuleExpressions
     /// </summary>
-#if DEBUG
-    public
-#endif
+
     abstract class RuleExpressionFactory
     {
         public abstract RuleExpression Create(AssembliesAccessWrapper assemblies);
     }
-#if DEBUG
-    public
-#endif
+
     class VariableCreator : RuleExpressionFactory
     {
         uint Id;
@@ -26,9 +22,7 @@ namespace LL1_Parser
             return new Variable(Id);
         }
     }
-#if DEBUG
-    public
-#endif
+
     class ConstantCreator<T> : RuleExpressionFactory
     {
         T Value;
@@ -38,9 +32,7 @@ namespace LL1_Parser
             return new Constant(Value);
         }
     }
-#if DEBUG
-    public
-#endif
+
     abstract class InvokableCreator : RuleExpressionFactory
     {
         protected StringBuilder FullNameBuilder;
@@ -53,9 +45,7 @@ namespace LL1_Parser
             Args = new List<RuleExpressionFactory>(a);
         }
     }
-#if DEBUG
-    public
-#endif
+
     class StaticMethodCallingCreator : InvokableCreator
     {
         public override void AddNamePart(string name)
@@ -67,8 +57,8 @@ namespace LL1_Parser
             Args.Add(arg ?? throw new ArgumentNullException($"RuleExpressionFactory argument is null"));
         }
         public StaticMethodCallingCreator(string mname, RuleExpressionFactory[] a)
-            :base(mname, a)
-        {}
+            : base(mname, a)
+        { }
         public override RuleExpression Create(AssembliesAccessWrapper assemblies)
         {
             var FullMethodName = FullNameBuilder.ToString();
@@ -87,9 +77,7 @@ namespace LL1_Parser
             return new StaticMethodCalling(type, methodname, args);
         }
     }
-#if DEBUG
-    public
-#endif
+
     class ConstructorCallingCreator : InvokableCreator
     {
         public override void AddNamePart(string name)
@@ -118,9 +106,6 @@ namespace LL1_Parser
         }
     }
 
-#if DEBUG
-    public
-#endif
     class InstanceMethodCallingCreator : InvokableCreator
     {
         RuleExpressionFactory _context = null;

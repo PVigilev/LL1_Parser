@@ -1,18 +1,30 @@
-﻿using LL1_Parser.Initialization;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace LL1_Parser
 {
-
-    public sealed class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
+    /// <summary>
+    /// Data structure for a context-free grammar
+    /// </summary>
+    sealed class Grammar : IEnumerable<KeyValuePair<NonTerminal, HashSet<Rule>>>
     {
+        /// <summary>
+        /// Symbol that is represented by this grammar
+        /// </summary>
         public readonly NonTerminal StartSymbol;
+        /// <summary>
+        /// set of rules
+        /// </summary>
         Dictionary<NonTerminal, HashSet<Rule>> Rules;
         RuleExpressionEvaluator Evaluator;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="start">Start Symbol</param>
+        /// <param name="rules">Set of rules</param>
+        /// <param name="ev">evaluator</param>
         public Grammar(NonTerminal start, Dictionary<NonTerminal, HashSet<Rule>> rules, RuleExpressionEvaluator ev)
         {
             if (rules == null)
@@ -37,7 +49,7 @@ namespace LL1_Parser
 
         public IEnumerator<KeyValuePair<NonTerminal, HashSet<Rule>>> GetEnumerator()
         {
-            foreach(var kvp in Rules)
+            foreach (var kvp in Rules)
             {
                 yield return kvp;
             }
@@ -52,6 +64,6 @@ namespace LL1_Parser
         }
 
 
-        
+
     }
 }
